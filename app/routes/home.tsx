@@ -3,6 +3,7 @@ import { Welcome } from "../welcome/welcome";
 import ParticleSimulator from "../components/ParticleSimulator";
 import Container from "../components/Container";
 import { useState } from "react";
+import { particleRulesets } from "~/data/particleRulesets";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -11,6 +12,15 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+// Paste rulesets you like from the browser console here.
+// Leave empty to get a new random one each load.
+const SAVED_RULESETS: Array<{
+  yellow: number[];
+  red:    number[];
+  green:  number[];
+  blue:   number[];
+}> = particleRulesets;
+
 export default function Home() {
   const [count, setCount] = useState(0);
 
@@ -18,7 +28,15 @@ export default function Home() {
   return (
     <>
       <div style={{ position: 'relative' }}>
-        <ParticleSimulator style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+        <ParticleSimulator style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} rulesets={SAVED_RULESETS} />
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          maskImage: 'linear-gradient(to right, black calc(50% - 600px), transparent calc(50% - 600px), transparent calc(50% + 600px), black calc(50% + 600px))',
+          WebkitMaskImage: 'linear-gradient(to right, black calc(50% - 600px), transparent calc(50% - 600px), transparent calc(50% + 600px), black calc(50% + 600px))',
+        }} />
         <Container style={{ position: 'relative' }}>
           <div style={{
             display: 'flex',

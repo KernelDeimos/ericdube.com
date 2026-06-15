@@ -69,17 +69,27 @@ function createParticles(canvas, colour, ruleDefs) {
   }));
 }
 
-function buildParticles(canvas) {
+function randomRuleset() {
   const r = () => Math.random() - 0.5;
+  return {
+    yellow: [r(), r(), r()],
+    red:    [r(), r(), r()],
+    green:  [r(), r(), r()],
+    blue:   [r(), r(), r(), r()],
+  };
+}
+
+function buildParticles(canvas, ruleset) {
+  const { yellow, red, green, blue } = ruleset;
   return [
-    ...createParticles(canvas, 'yellow', [['red', r()], ['yellow', r()], ['green', r()]]),
-    ...createParticles(canvas, 'red',    [['green', r()], ['yellow', r()], ['red', r()]]),
-    ...createParticles(canvas, 'green',  [['yellow', r()], ['red', r()], ['blue', r()]]),
-    ...createParticles(canvas, 'blue',   [['yellow', r()], ['red', r()], ['green', r()], ['red', r()]]),
+    ...createParticles(canvas, 'yellow', [['red', yellow[0]], ['yellow', yellow[1]], ['green', yellow[2]]]),
+    ...createParticles(canvas, 'red',    [['green', red[0]],  ['yellow', red[1]],    ['red', red[2]]]),
+    ...createParticles(canvas, 'green',  [['yellow', green[0]], ['red', green[1]],   ['blue', green[2]]]),
+    ...createParticles(canvas, 'blue',   [['yellow', blue[0]], ['red', blue[1]],     ['green', blue[2]], ['red', blue[3]]]),
   ];
 }
 
-export default function ParticleSimulator({ className, style }) {
+export default function ParticleSimulator({ className, style, rulesets }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -107,7 +117,11 @@ export default function ParticleSimulator({ className, style }) {
     paint();
 
     const timer = setTimeout(() => {
-      particles = buildParticles(canvas);
+      const ruleset = (rulesets && rulesets.length > 0)
+        ? rulesets[Math.floor(Math.random() * rulesets.length)]
+        : randomRuleset();
+      console.log('ParticleSimulator ruleset:', JSON.stringify(ruleset));
+      particles = buildParticles(canvas, ruleset);
     }, 200);
 
     return () => {
