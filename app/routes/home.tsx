@@ -19,7 +19,7 @@ const SAVED_RULESETS: Array<{
   red:    number[];
   green:  number[];
   blue:   number[];
-}> = particleRulesets;
+}> = [];
 
 export default function Home() {
   const [count, setCount] = useState(0);
