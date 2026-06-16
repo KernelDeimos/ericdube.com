@@ -9,8 +9,12 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@portabletext/react": "^6.2.0",
     "@react-router/node": "7.16.0",
     "@react-router/serve": "7.16.0",
+    "@sanity/client": "^7.22.1",
+    "@sanity/image-url": "^2.1.1",
+    "@tailwindcss/typography": "^0.5.20",
     "isbot": "^5.1.36",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
