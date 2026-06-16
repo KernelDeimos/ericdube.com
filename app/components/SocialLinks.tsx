@@ -1,10 +1,9 @@
 import styles from './SocialLinks.module.css';
 
 const LINKS = [
-  { label: 'GitHub', href: 'https://github.com/ericdube' },
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/ericdube' },
-  { label: 'X / Twitter', href: 'https://x.com/ericdube' },
-  { label: 'Email', href: 'mailto:eric.alex.dube@gmail.com' },
+  { label: 'GitHub', href: 'https://github.com/KernelDeimos' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ericalexdube' },
+  { label: 'X / Twitter', href: 'https://x.com/ericalexdube' },
 ];
 
 export default function SocialLinks() {

@@ -6,13 +6,12 @@ import GitHubProjects from '../components/GitHubProjects';
 import MusingsCarousel from '../components/MusingsCarousel';
 import { client } from '~/sanity/client';
 
-const GITHUB_PROJECTS = [
-  {
-    name: 'com-ericdube-2026',
-    description: 'Personal site built with React Router and Sanity.',
-    url: 'https://github.com/ericdube/com-ericdube-2026',
-  },
-];
+type Project = {
+  _id: string;
+  name: string;
+  description: string;
+  url: string;
+};
 
 type Musing = {
   _id: string;
@@ -22,15 +21,25 @@ type Musing = {
 };
 
 export async function loader() {
-  const musings: Musing[] = await client.fetch(
-    `*[_type == "musing"] | order(publishedAt desc) {
-      _id,
-      body,
-      publishedAt,
-      tags
-    }`
-  );
-  return { musings };
+  const [projects, musings] = await Promise.all([
+    client.fetch<Project[]>(
+      `*[_type == "project"] | order(order asc, name asc) {
+        _id,
+        name,
+        description,
+        url
+      }`
+    ),
+    client.fetch<Musing[]>(
+      `*[_type == "musing"] | order(publishedAt desc) {
+        _id,
+        body,
+        publishedAt,
+        tags
+      }`
+    ),
+  ]);
+  return { projects, musings };
 }
 
 export function meta({}: Route.MetaArgs) {
@@ -41,12 +50,12 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const { musings } = useLoaderData<typeof loader>();
+  const { projects, musings } = useLoaderData<typeof loader>();
 
   return (
     <Container style={{ paddingTop: '3rem' }}>
       <SocialLinks />
-      <GitHubProjects projects={GITHUB_PROJECTS} />
+      <GitHubProjects projects={projects} />
       <MusingsCarousel musings={musings} />
     </Container>
   );

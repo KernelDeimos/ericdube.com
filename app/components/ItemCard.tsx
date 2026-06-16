@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { urlFor } from '~/sanity/image';
+import styles from './ItemCard.module.css';
 
 type ItemCardProps = {
   title: string;
@@ -12,25 +12,8 @@ type ItemCardProps = {
 };
 
 export default function ItemCard({ title, url, accentColor = 'black', publishedAt, excerpt, tags, coverImage }: ItemCardProps) {
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <a
-      href={url}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        textDecoration: 'none',
-        color: 'inherit',
-        display: 'flex',
-        gap: '1.5rem',
-        alignItems: 'flex-start',
-        border: `2px solid #ffffff5d`,
-        borderRadius: '0.75rem',
-        padding: '1rem',
-        backgroundColor: hovered ? 'rgba(43, 92, 113, 0.73)' : 'rgba(34, 49, 58, 0.5)',
-      }}
-    >
+    <a href={url} className={styles.card}>
       {coverImage && (
         <img
           src={urlFor(coverImage).width(240).height(140).fit('crop').url()}
@@ -40,8 +23,7 @@ export default function ItemCard({ title, url, accentColor = 'black', publishedA
           style={{ borderRadius: '0.375rem', objectFit: 'cover', flexShrink: 0 }}
         />
       )}
-      <div style={{
-      }}>
+      <div>
         <h2 style={{ fontSize: '1.25rem', margin: '0 0 0.375rem', color: accentColor }}>{title}</h2>
         {publishedAt && (
           <p style={{ fontSize: '0.875rem', color: '#94a3b8', margin: '0 0 0.5rem' }}>
