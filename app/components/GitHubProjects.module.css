@@ -1,0 +1,46 @@
+.section {
+    margin-bottom: 3rem;
+}
+
+.heading {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-teal);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 1rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.card {
+    display: block;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid #ffffff30;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s;
+}
+
+.card:hover {
+    border-color: var(--color-mustard);
+}
+
+.cardName {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-mustard);
+    margin: 0 0 0.35rem;
+}
+
+.cardDesc {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin: 0;
+    line-height: 1.5;
+}
