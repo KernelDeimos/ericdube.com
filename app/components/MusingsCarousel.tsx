@@ -19,7 +19,7 @@ type Musing = {
   tags: string[] | null;
 };
 
-const FLIP_INTERVAL = 6000;
+const FLIP_INTERVAL = 20000;
 
 function bodyFontSize(body: string): string {
   const len = body.length;
