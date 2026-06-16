@@ -3,6 +3,8 @@
 This README.md file contains the instal/dev/build instructions
 from the original README.md from the React Router generator.
 
+![Screenshot of the Website](./screenshot.png)
+
 ### Installation
 
 Install the dependencies:
