@@ -80,7 +80,7 @@ export default function ArticleDetail() {
   const { article } = useLoaderData<typeof loader>();
 
   return (
-    <Container style={{ paddingTop: '3rem', paddingBottom: '4rem', maxWidth: '740px' }}>
+    <Container style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
       {article.coverImage && (
         <img
           src={urlFor(article.coverImage).width(740).height(360).fit('crop').url()}
