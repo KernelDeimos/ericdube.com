@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-letter-e" width="250px" height="250px" viewBox="0 0 24 24" stroke-width="3.14" stroke="rgba(255, 255, 255, 1)" fill="none" stroke-linecap="round" stroke-linejoin="round"><defs><filter id="sharpness-filter1666" x="0" y="0" width="100%" height="100%"><feConvolveMatrix kernelMatrix="0 -1 0 -1 5 -1 0 -1 0"/></filter></defs><rect x="0" y="0" width="100%" height="100%" stroke="none" stroke-width="0" fill="rgba(0, 0, 255, 1)" rx="5" ry="5"/><g transform="translate(-1.20, -1.20) scale(1.1)" style="filter: url(&quot;#sharpness-filter1666&quot;);"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 4h-10v16h10"/><line x1="7" y1="12" x2="15" y2="12"/></g>
+  
+  
+  
+</svg>

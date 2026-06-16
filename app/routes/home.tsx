@@ -11,6 +11,7 @@ type Project = {
   name: string;
   description: string;
   url: string;
+  image: { asset: object; alt: string } | null;
 };
 
 type Musing = {
@@ -27,7 +28,8 @@ export async function loader() {
         _id,
         name,
         description,
-        url
+        url,
+        image { asset, alt }
       }`
     ),
     client.fetch<Musing[]>(
