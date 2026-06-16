@@ -4,6 +4,7 @@ import { PortableText } from '@portabletext/react';
 import { client } from '~/sanity/client';
 import { urlFor } from '~/sanity/image';
 import Container from '~/components/Container';
+import styles from './articles.$slug.module.css';
 
 type Article = {
   title: string;
@@ -88,7 +89,7 @@ export default function ArticleDetail() {
           style={{ width: '100%', borderRadius: '0.5rem', marginBottom: '2rem' }}
         />
       )}
-      <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.75rem)', margin: '0 0 0.75rem' }}>{article.title}</h1>
+      <h1 className={styles.articleTitle} style={{ fontSize: 'clamp(1.75rem, 4vw, 2.75rem)', margin: '0 0 0.75rem' }}>{article.title}</h1>
       {article.publishedAt && (
         <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 1rem' }}>
           {new Date(article.publishedAt).toLocaleDateString('en-CA', {
@@ -111,7 +112,7 @@ export default function ArticleDetail() {
           ))}
         </div>
       )}
-      <div style={{ lineHeight: 1.8, color: '#cbd5e1' }}>
+      <div className={styles.body} style={{ lineHeight: 1.8, color: '#cbd5e1' }}>
         <PortableText value={article.body} components={portableTextComponents} />
       </div>
     </Container>

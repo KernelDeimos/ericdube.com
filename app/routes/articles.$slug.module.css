@@ -1,0 +1,51 @@
+h1.articleTitle {
+    color: var(--color-mustard);
+}
+
+.body p {
+    color: #bea0e5;
+}
+
+.body code {
+    color: #f0f8ff;
+}
+
+.body h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.75rem;
+    color: var(--color-mustard);
+}
+
+.body h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.75rem;
+    color: var(--color-mustard);
+}
+
+.body h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.25rem 0 0.5rem;
+    color: var(--color-teal);
+}
+
+.body h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem;
+    color: var(--color-sky);
+}
+
+.body h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem;
+}
+
+.body h6 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem;
+}

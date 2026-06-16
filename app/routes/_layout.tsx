@@ -25,7 +25,7 @@ export default function SiteLayout() {
           maskImage: 'linear-gradient(to right, black calc(50% - 600px), transparent calc(50% - 600px), transparent calc(50% + 600px), black calc(50% + 600px))',
           WebkitMaskImage: 'linear-gradient(to right, black calc(50% - 600px), transparent calc(50% - 600px), transparent calc(50% + 600px), black calc(50% + 600px))',
         }} />
-        <Container style={{ position: 'relative' }}>
+        <Container style={{ position: 'relative', padding: '0' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <div style={{
               backdropFilter: 'blur(8px)',

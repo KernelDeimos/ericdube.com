@@ -4,13 +4,14 @@ import { urlFor } from '~/sanity/image';
 type ItemCardProps = {
   title: string;
   url: string;
+  accentColor?: string;
   publishedAt: string | null;
   excerpt: string | null;
   tags: string[] | null;
   coverImage: { asset: object; alt: string } | null;
 };
 
-export default function ItemCard({ title, url, publishedAt, excerpt, tags, coverImage }: ItemCardProps) {
+export default function ItemCard({ title, url, accentColor = 'black', publishedAt, excerpt, tags, coverImage }: ItemCardProps) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -24,10 +25,10 @@ export default function ItemCard({ title, url, publishedAt, excerpt, tags, cover
         display: 'flex',
         gap: '1.5rem',
         alignItems: 'flex-start',
-        border: '2px solid black',
+        border: `2px solid #ffffff5d`,
         borderRadius: '0.75rem',
         padding: '1rem',
-        backgroundColor: hovered ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)',
+        backgroundColor: hovered ? 'rgba(43, 92, 113, 0.73)' : 'rgba(34, 49, 58, 0.5)',
       }}
     >
       {coverImage && (
@@ -41,7 +42,7 @@ export default function ItemCard({ title, url, publishedAt, excerpt, tags, cover
       )}
       <div style={{
       }}>
-        <h2 style={{ fontSize: '1.25rem', margin: '0 0 0.375rem' }}>{title}</h2>
+        <h2 style={{ fontSize: '1.25rem', margin: '0 0 0.375rem', color: accentColor }}>{title}</h2>
         {publishedAt && (
           <p style={{ fontSize: '0.875rem', color: '#94a3b8', margin: '0 0 0.5rem' }}>
             {new Date(publishedAt).toLocaleDateString('en-CA', {

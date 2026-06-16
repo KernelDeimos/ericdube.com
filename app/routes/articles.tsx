@@ -42,7 +42,7 @@ export default function Articles() {
       <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         {articles.map((article) => (
           <li key={article.slug}>
-            <ItemCard {...article} url={`/articles/${article.slug}`} />
+            <ItemCard {...article} url={`/articles/${article.slug}`} accentColor="var(--color-mustard)" />
           </li>
         ))}
       </ul>

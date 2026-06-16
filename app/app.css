@@ -3,11 +3,14 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --color-mustard: #ffdb58;
+  --color-teal: #42e9ac;
+  --color-sky: #3babef;
 }
 
 html,
 body {
-  background-color: #2e4a1c;
+  background-color: #060a04;
   color: #e2e8f0;
   color-scheme: dark;
 }
