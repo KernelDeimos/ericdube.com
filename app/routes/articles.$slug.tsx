@@ -36,11 +36,11 @@ const portableTextComponents = {
       />
     ),
     image: ({ value }: { value: { asset: object; alt: string; caption?: string } }) => (
-      <figure style={{ margin: '1.5rem 0' }}>
+      <figure style={{ margin: '1.5rem 0', textAlign: 'center' }}>
         <img
-          src={urlFor(value).width(900).url()}
+          src={urlFor(value).width(900).fit('max').url()}
           alt={value.alt}
-          style={{ width: '100%', borderRadius: '0.375rem' }}
+          style={{ maxWidth: '100%', minWidth: '200px', width: 'auto', height: 'auto', borderRadius: '0.375rem', margin: '0 auto' }}
         />
         {value.caption && (
           <figcaption style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.875rem', marginTop: '0.5rem' }}>
