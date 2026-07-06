@@ -1,0 +1,8 @@
+h1.name {
+    color: var(--color-sky);
+}
+
+.rating {
+    color: var(--color-sky);
+    font-weight: 600;
+}
