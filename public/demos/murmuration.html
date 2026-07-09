@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Murmuration — live demo</title>
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c"></canvas>
+  <div id="tag">Murmuration · boids flocking · Python in your browser (Pyodide)</div>
+  <div id="boot">Starting Python…<br><small>loading Pyodide (CPython → WebAssembly)</small></div>
+</div>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script src="./harness.js"></script>
+<script>
+PyDemo.canvas({
+  coreUrl: './cores/boids.py',
+  create: (py, w, h) => py.globals.get('Boids')(w, h, 160),
+  onResize: (sim, w, h) => sim.resize(w, h),
+  step: (sim) => sim.step(),
+  draw: (ctx, sim, w, h) => {
+    const arr = PyDemo.arr(sim.state());
+    ctx.fillStyle = '#0a0c14';
+    ctx.fillRect(0, 0, w, h);
+    for (let i = 0; i < arr.length; i += 3) {
+      const x = arr[i], y = arr[i + 1], a = arr[i + 2];
+      const hue = ((a * 180 / Math.PI) + 180) % 360;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(a);
+      ctx.fillStyle = `hsl(${hue} 70% 62%)`;
+      ctx.beginPath();
+      ctx.moveTo(7, 0); ctx.lineTo(-5, 4); ctx.lineTo(-5, -4); ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+  },
+});
+</script>
+</body>
+</html>

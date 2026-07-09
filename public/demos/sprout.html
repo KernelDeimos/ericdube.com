@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sprout — live demo</title>
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c"></canvas>
+  <div id="tag">Sprout · L-system grower · Python (Pyodide)</div>
+  <div id="boot">Starting Python…<br><small>loading Pyodide (CPython → WebAssembly)</small></div>
+</div>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script src="./harness.js"></script>
+<script>
+let segs = [], bbox = [0, 0, 1, 1], plant = false, reveal = 0, phase = 0;
+function loadFrom(sim) {
+  segs = PyDemo.arr(sim.segments());
+  bbox = PyDemo.arr(sim.bbox());
+  plant = sim.is_plant();
+  reveal = 0;
+  phase = 0;
+}
+PyDemo.canvas({
+  coreUrl: './cores/lsystem.py',
+  create: (py, w, h) => py.globals.get('LSystem')(w, h),
+  onReady: (sim) => loadFrom(sim),
+  step: (sim) => {
+    const total = segs.length / 4;
+    if (reveal < total) {
+      reveal = Math.min(total, reveal + Math.max(1, Math.floor(total / 75)));
+    } else {
+      phase += 0.03;
+      if (phase > 6) { sim.next(); loadFrom(sim); }
+    }
+  },
+  draw: (ctx, sim, w, h) => {
+    ctx.fillStyle = '#090c0c';
+    ctx.fillRect(0, 0, w, h);
+    const total = segs.length / 4;
+    if (total < 1) return;
+    const [minx, miny, maxx, maxy] = bbox;
+    const margin = 40;
+    const scale = Math.min((w - 2 * margin) / (maxx - minx || 1),
+                           (h - 2 * margin) / (maxy - miny || 1));
+    const offx = (w - (maxx - minx) * scale) / 2 - minx * scale;
+    const offy = (h - (maxy - miny) * scale) / 2 - miny * scale;
+    const sway = Math.sin(phase) * (plant ? 3.0 : 0.6);
+    const bx = offx + ((minx + maxx) / 2) * scale;
+    const by = offy + maxy * scale;
+    ctx.save();
+    ctx.translate(bx, by);
+    ctx.rotate(sway * Math.PI / 180);
+    ctx.translate(-bx, -by);
+    ctx.lineWidth = 1.4;
+    const shown = Math.floor(reveal);
+    for (let i = 0; i < shown; i++) {
+      const x1 = segs[i * 4], y1 = segs[i * 4 + 1], x2 = segs[i * 4 + 2], y2 = segs[i * 4 + 3];
+      const frac = i / total;
+      ctx.strokeStyle = plant
+        ? `hsl(${95 + 40 * frac} 60% ${30 + 30 * frac}%)`
+        : `hsl(${(frac * 300) % 360} 75% 60%)`;
+      ctx.beginPath();
+      ctx.moveTo(offx + x1 * scale, offy + y1 * scale);
+      ctx.lineTo(offx + x2 * scale, offy + y2 * scale);
+      ctx.stroke();
+    }
+    ctx.restore();
+  },
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vitalis — live demo</title>
+<link rel="stylesheet" href="./demo.css">
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c"></canvas>
+  <div id="tag">Vitalis · Game of Life · pattern library · Python (Pyodide)</div>
+  <div id="boot">Starting Python…<br><small>loading Pyodide (CPython → WebAssembly)</small></div>
+</div>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script src="./harness.js"></script>
+<script>
+PyDemo.canvas({
+  coreUrl: './cores/life.py',
+  fps: 12,
+  create: (py, w, h) => py.globals.get('Life')(w, h, 8),
+  onResize: (sim, w, h) => sim.resize(w, h),
+  step: (sim) => sim.step(),
+  draw: (ctx, sim, w, h) => {
+    const dims = PyDemo.arr(sim.dims());
+    const cell = dims[2];
+    const cells = PyDemo.arr(sim.cells());
+    ctx.fillStyle = '#08090e';
+    ctx.fillRect(0, 0, w, h);
+    for (let i = 0; i < cells.length; i += 3) {
+      const col = cells[i], row = cells[i + 1], age = cells[i + 2];
+      const hue = 190 + Math.min(60, age * 3);
+      const light = age <= 1 ? 72 : Math.max(44, 62 - age * 1.5);
+      ctx.fillStyle = `hsl(${hue} 60% ${light}%)`;
+      ctx.fillRect(col * cell, row * cell, cell - 1, cell - 1);
+    }
+  },
+});
+</script>
+</body>
+</html>
