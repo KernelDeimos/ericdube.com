@@ -4,13 +4,8 @@ import { PortableText } from '@portabletext/react';
 import { client } from '~/sanity/client';
 import { urlFor } from '~/sanity/image';
 import Container from '~/components/Container';
+import { type AiInfo, designationLabel, scoreColor } from '~/lib/ai';
 import styles from './articles.$slug.module.css';
-
-type AiInfo = {
-  designation: string | null;
-  score: number | null;
-  flaggedSentences: string[] | null;
-};
 
 type Article = {
   title: string;
@@ -23,19 +18,6 @@ type Article = {
 };
 
 const HIGHLIGHT_MARK = 'aiHighlight';
-
-const DESIGNATION_LABELS: Record<string, string> = {
-  unspecified: 'Unspecified',
-  'human-written': 'Human-written',
-  'ai-generated': 'AI-generated',
-  mixed: 'Mixed',
-};
-
-function scoreColor(score: number): string {
-  if (score < 20) return '#4ade80'; // green
-  if (score < 50) return '#e0b341'; // mustard
-  return '#f87171'; // red
-}
 
 // Inject an `aiHighlight` decorator onto the runs of text that ZeroGPT flagged.
 // Works at the block level so a flagged sentence spanning several spans (e.g.
@@ -173,7 +155,7 @@ export function meta({ data }: Route.MetaArgs) {
 function AiPanel({ ai }: { ai: AiInfo }) {
   const score = typeof ai.score === 'number' ? ai.score : null;
   const flaggedCount = ai.flaggedSentences?.length ?? 0;
-  const designation = ai.designation ? DESIGNATION_LABELS[ai.designation] ?? ai.designation : null;
+  const designation = designationLabel(ai.designation);
 
   return (
     <aside

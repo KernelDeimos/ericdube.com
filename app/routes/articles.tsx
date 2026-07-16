@@ -1,5 +1,6 @@
 import { useLoaderData } from 'react-router';
 import { client } from '~/sanity/client';
+import type { AiInfo } from '~/lib/ai';
 import Container from '~/components/Container';
 import ItemCard from '~/components/ItemCard';
 
@@ -10,6 +11,7 @@ type Article = {
   excerpt: string | null;
   tags: string[] | null;
   coverImage: { asset: object; alt: string } | null;
+  ai: AiInfo | null;
 };
 
 export async function loader() {
@@ -20,7 +22,8 @@ export async function loader() {
       publishedAt,
       excerpt,
       tags,
-      coverImage { asset, alt }
+      coverImage { asset, alt },
+      ai { designation, score }
     }`
   );
   return { articles };
