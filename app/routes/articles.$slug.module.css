@@ -6,6 +6,14 @@ h1.articleTitle {
     color: #bea0e5;
 }
 
+.aiMark {
+    background-color: rgba(192, 132, 252, 0.25);
+    border-bottom: 1px solid rgba(192, 132, 252, 0.85);
+    border-radius: 2px;
+    padding: 0 2px;
+    color: inherit;
+}
+
 .body code {
     color: #f0f8ff;
 }
