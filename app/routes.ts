@@ -10,4 +10,5 @@ export default [
     route("weird-food", "routes/weird-food.tsx"),
     route("weird-food/:slug", "routes/weird-food.$slug.tsx"),
   ]),
+  route("api/zerogpt", "routes/api.zerogpt.tsx"),
 ] satisfies RouteConfig;
