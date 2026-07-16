@@ -9,7 +9,6 @@ export default [
     route("musings", "routes/musings.tsx"),
     route("weird-food", "routes/weird-food.tsx"),
     route("weird-food/:slug", "routes/weird-food.$slug.tsx"),
-    route("nexus", "routes/nexus.tsx"),
   ]),
   route("api/nexus/health", "routes/api.nexus.health.tsx"),
   route("api/nexus/publish", "routes/api.nexus.publish.tsx"),
