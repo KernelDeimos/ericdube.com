@@ -20,7 +20,7 @@ const webDemos: Demo[] = [
   {
     title: 'Craftgate',
     file: 'http://ericdube.com:3007/',
-    blurb: 'A live demo server hosting interactive web experiments.',
+    blurb: 'A 3D multiplayer environment where you can jump around and place cubes.',
     accent: '#f59e0b',
     external: true,
   },
