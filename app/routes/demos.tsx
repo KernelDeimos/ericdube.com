@@ -10,6 +10,14 @@ type Demo = {
 
 const webDemos: Demo[] = [
   {
+    title: 'Meme Wars',
+    file: 'http://ericdube.com:4700/',
+    blurb:
+      'A 2D stick-figure co-op meme shooter — host your own server and fight the meme hordes together. Node.js + HTML5 Canvas.',
+    accent: '#ff7a33',
+    external: true,
+  },
+  {
     title: 'Craftgate',
     file: 'http://ericdube.com:3007/',
     blurb: 'A live demo server hosting interactive web experiments.',
