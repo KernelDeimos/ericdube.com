@@ -10,6 +10,13 @@ type Demo = {
 
 const webDemos: Demo[] = [
   {
+    title: 'Particle Life',
+    file: '/demos/particle-life',
+    blurb:
+      'Four species of particle and a random matrix of attraction and repulsion rules. Nobody codes the shapes — cells, chains and orbiting clusters just fall out of the arithmetic.',
+    accent: '#44ff88',
+  },
+  {
     title: 'Meme Wars',
     file: 'http://ericdube.com:4700/',
     blurb:

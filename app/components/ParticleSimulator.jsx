@@ -98,11 +98,18 @@ export default function ParticleSimulator({ className, style, rulesets }) {
     let particles = [];
     let animId;
 
+    // Size the backing store eagerly as well as on resize, so the first frames
+    // don't render into the default 300x150 buffer and appear stretched.
+    const resize = (w, h) => {
+      canvas.width  = Math.max(1, Math.round(w));
+      canvas.height = Math.max(1, Math.round(h));
+    };
+    resize(canvas.clientWidth, canvas.clientHeight);
+
     const observer = new ResizeObserver(entries => {
       for (const entry of entries) {
         if (!entry.contentRect) continue;
-        canvas.width  = entry.contentRect.width;
-        canvas.height = entry.contentRect.height;
+        resize(entry.contentRect.width, entry.contentRect.height);
       }
     });
     observer.observe(canvas);

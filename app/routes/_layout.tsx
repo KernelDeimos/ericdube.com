@@ -1,7 +1,8 @@
-import { Outlet, NavLink } from 'react-router';
-import ParticleSimulator from '~/components/ParticleSimulator';
+import { useEffect, useRef, useState } from 'react';
+import { Outlet, NavLink, useLocation } from 'react-router';
+import RandomCanvasAnimation from '~/components/RandomCanvasAnimation';
+import { LUA_ANIMATIONS } from '~/components/lua-animations';
 import Container from '~/components/Container';
-import { particleRulesets } from '~/data/particleRulesets';
 
 const navLinkStyle = ({ isActive }: { isActive: boolean }) => ({
   color: isActive ? '#fff' : '#94a3b8',
@@ -10,12 +11,27 @@ const navLinkStyle = ({ isActive }: { isActive: boolean }) => ({
 });
 
 export default function SiteLayout() {
+  const { pathname } = useLocation();
+  // Advance one animation per navigation, so clicking through the tabs
+  // round-robins the banner. The starting point is randomised per page load so
+  // a fresh visit doesn't always open on the same one.
+  const [step, setStep] = useState(() => Math.floor(Math.random() * LUA_ANIMATIONS.length));
+  const lastPath = useRef(pathname);
+
+  useEffect(() => {
+    if (lastPath.current === pathname) return;
+    lastPath.current = pathname;
+    setStep((s) => s + 1);
+  }, [pathname]);
+
+  const animation = LUA_ANIMATIONS[step % LUA_ANIMATIONS.length];
+
   return (
     <>
       <div style={{ position: 'relative' }}>
-        <ParticleSimulator
+        <RandomCanvasAnimation
+          script={animation}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
-          rulesets={particleRulesets}
         />
         <div style={{
           position: 'absolute',
