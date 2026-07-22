@@ -3,10 +3,10 @@ local pts = {}
 
 function setup(w, h)
   local R, r = 1.0, 0.42
-  for i = 0, 35 do
-    for j = 0, 17 do
-      local u = i / 36 * math.pi * 2
-      local v = j / 18 * math.pi * 2
+  for i = 0, 47 do
+    for j = 0, 23 do
+      local u = i / 48 * math.pi * 2
+      local v = j / 24 * math.pi * 2
       pts[#pts + 1] = {
         x = (R + r * math.cos(v)) * math.cos(u),
         y = (R + r * math.cos(v)) * math.sin(u),
@@ -20,7 +20,10 @@ function draw(t, w, h)
   background(6, 7, 12)
 
   local cx, cy = w / 2, h / 2
-  local scale = math.min(w, h) * 0.30
+  -- Sized to the header's larger dimension, so the donut is big enough to spill
+  -- past the top and bottom edges. As it tumbles it sweeps wide and, when it
+  -- lands edge-on, fills much of the header's width. Cutting off is intentional.
+  local scale = math.max(w, h) * 0.18
   local ax, ay = t * 0.5, t * 0.32
   local cosx, sinx = math.cos(ax), math.sin(ax)
   local cosy, siny = math.cos(ay), math.sin(ay)
@@ -37,6 +40,6 @@ function draw(t, w, h)
 
     local light = math.max(0, math.min(1, (z2 + 1.4) / 2.8))
     fill_hsl((205 + z2 * 45) % 360, 82, 30 + light * 45, 1)
-    circle(sx, sy, 2.3 * persp + 0.4)
+    circle(sx, sy, (scale * 0.012 + 0.6) * persp + 0.3)
   end
 end
