@@ -30,7 +30,7 @@ the same server (they used to come from Sanity). Two environment variables
 configure the connection (used server-side only, never exposed to the browser):
 
 - `NEXUS_URL` — the node's base URL (default `http://127.0.0.1:42067`).
-- `NEXUS_TOKEN` — an `x-nexus-token` scoped to read `pub.artifacts`. Omit on a
+- `NEXUS_TOKEN` — an `x-nexus-token` whose tokens.yaml grant includes read on `pub.artifacts` (or `**`), scoped to read `pub.artifacts`. Omit on a
   trusted-loopback dev node; required once the node enforces tokens.
 
 ## Building for Production
