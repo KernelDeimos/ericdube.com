@@ -32,14 +32,17 @@ async function nexusFetch(path: string): Promise<Response> {
   return res;
 }
 
-// Metadata for the artifacts index. Only those with a slug (a stable URL) are
-// returned, newest published first — matching the old Sanity query.
+// Metadata for the artifacts index, newest published first. Each artifact needs
+// a stable URL id: prefer its slug, but fall back to the id so the page still
+// works against a nexus node whose build predates slugs (otherwise a version
+// skew would silently show "No artifacts yet." even though the node has them).
+// The single-artifact route resolves either form.
 export async function listArtifacts(): Promise<NexusArtifact[]> {
   const { artifacts } = (await (await nexusFetch('/api/artifacts')).json()) as {
     artifacts: NexusArtifact[];
   };
   return (artifacts ?? [])
-    .filter((a) => a.slug)
+    .map((a) => ({ ...a, slug: a.slug || a.id }))
     .sort((a, b) => (b.publishedAt ?? '').localeCompare(a.publishedAt ?? ''));
 }
 
