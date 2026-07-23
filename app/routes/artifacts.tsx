@@ -1,7 +1,7 @@
 import { useLoaderData } from 'react-router';
 import Container from '~/components/Container';
-import { client } from '~/sanity/client';
 import { type AiInfo, designationLabel } from '~/lib/ai';
+import { listArtifacts } from '~/lib/nexus';
 
 type Artifact = {
   title: string;
@@ -14,17 +14,16 @@ type Artifact = {
 };
 
 export async function loader() {
-  const artifacts: Artifact[] = await client.fetch(
-    `*[_type == "artifact" && defined(slug.current)] | order(publishedAt desc) {
-      title,
-      "slug": slug.current,
-      kind,
-      description,
-      accent,
-      publishedAt,
-      ai { designation, score }
-    }`
-  );
+  // Artifacts now come from the local claude-nexus node (previously Sanity).
+  const artifacts: Artifact[] = (await listArtifacts()).map((a) => ({
+    title: a.title,
+    slug: a.slug,
+    kind: a.kind,
+    description: a.description,
+    accent: a.accent,
+    publishedAt: a.publishedAt,
+    ai: a.ai,
+  }));
   return { artifacts };
 }
 

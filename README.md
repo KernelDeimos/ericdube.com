@@ -23,6 +23,16 @@ npm run dev
 
 The website will be available at `http://localhost:5173`.
 
+## Artifacts (claude-nexus)
+
+The `/artifacts` pages are served from a local **claude-nexus** node running on
+the same server (they used to come from Sanity). Two environment variables
+configure the connection (used server-side only, never exposed to the browser):
+
+- `NEXUS_URL` — the node's base URL (default `http://127.0.0.1:42067`).
+- `NEXUS_TOKEN` — an `x-nexus-token` scoped to read `pub.artifacts`. Omit on a
+  trusted-loopback dev node; required once the node enforces tokens.
+
 ## Building for Production
 
 Create a production build:
