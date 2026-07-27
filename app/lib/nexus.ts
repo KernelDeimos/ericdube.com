@@ -32,6 +32,28 @@ async function nexusFetch(path: string): Promise<Response> {
   return res;
 }
 
+// Append an entry to a nexus log key. Used to announce contact-form enquiries
+// on a channel so they show up live rather than only in the CMS.
+//
+// Goes through /api/tools/insert rather than /api/keys/<key>/insert because
+// only the tools endpoint auto-creates a missing key — the per-key route 404s,
+// which would make the first enquiry after a fresh deploy fail.
+export async function appendToNexusLog(key: string, value: unknown): Promise<void> {
+  const res = await fetch(`${NEXUS_URL}/api/tools/insert`, {
+    method: 'POST',
+    headers: { ...headers(), 'content-type': 'application/json' },
+    body: JSON.stringify({ args: { key, type: 'log', value } }),
+  });
+  if (!res.ok) {
+    throw new Error(`nexus insert ${key} -> ${res.status} ${res.statusText}`);
+  }
+  // The tools endpoint can still report a failure in a 200 body.
+  const body = (await res.json()) as { ok?: boolean; error?: string };
+  if (body.ok === false) {
+    throw new Error(`nexus insert ${key} -> ${body.error ?? 'unknown error'}`);
+  }
+}
+
 // Metadata for the artifacts index, newest published first. Each artifact needs
 // a stable URL id: prefer its slug, but fall back to the id so the page still
 // works against a nexus node whose build predates slugs (otherwise a version

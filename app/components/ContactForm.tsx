@@ -181,7 +181,7 @@ export default function ContactForm({
           {submitting ? 'Sending…' : 'Send enquiry'}
         </button>
         <span className={styles.optional} style={{ fontSize: '0.85rem' }}>
-          or <a href={mailto} style={{ color: 'var(--color-mustard)' }}>email me</a>
+          {/* or <a href={mailto} style={{ color: 'var(--color-mustard)' }}>email me</a> */}
         </span>
       </div>
 

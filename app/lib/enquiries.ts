@@ -1,14 +1,25 @@
 // Where contact-form submissions go. Server-side only — it holds a write token,
 // so never import this from client code.
 //
-// Today an enquiry becomes an `enquiry` document in Sanity, which you triage in
-// the Studio. Swapping in email (Resend/SMTP) or the nexus node later means
-// rewriting `deliverEnquiry` and nothing else: the route only knows about
-// `submitEnquiry` and the result union below.
+// Two independent channels, each enabled by its own env var:
+//
+//   SANITY_WRITE_TOKEN  -> creates an `enquiry` document you triage in the
+//                          Studio. The durable record: status, private notes,
+//                          and a reference to the service it came from.
+//   ENQUIRY_NEXUS_KEY   -> announces the enquiry on a claude-nexus channel so
+//                          it shows up live. Reuses NEXUS_URL / NEXUS_TOKEN.
+//
+// A submission succeeds if AT LEAST ONE channel accepts it, so nexus alone is a
+// valid setup (no Sanity token needed) and a nexus outage cannot lose an
+// enquiry that Sanity already stored. With neither configured the route falls
+// back to telling the visitor to email instead — a message is never silently
+// dropped.
 
 import { createClient } from '@sanity/client';
+import { appendToNexusLog } from './nexus';
 
 const SANITY_WRITE_TOKEN = process.env.SANITY_WRITE_TOKEN ?? '';
+const ENQUIRY_NEXUS_KEY = process.env.ENQUIRY_NEXUS_KEY ?? '';
 
 export type EnquiryInput = {
   name: string;
@@ -27,7 +38,7 @@ export type EnquiryResult =
   | { ok: false; reason: 'error' };
 
 export function enquiriesConfigured(): boolean {
-  return SANITY_WRITE_TOKEN !== '';
+  return SANITY_WRITE_TOKEN !== '' || ENQUIRY_NEXUS_KEY !== '';
 }
 
 const writeClient = SANITY_WRITE_TOKEN
@@ -40,7 +51,7 @@ const writeClient = SANITY_WRITE_TOKEN
     })
   : null;
 
-async function deliverEnquiry(input: EnquiryInput): Promise<void> {
+async function deliverToSanity(input: EnquiryInput, submittedAt: string): Promise<void> {
   if (!writeClient) throw new Error('no write client');
   await writeClient.create({
     _type: 'enquiry',
@@ -54,19 +65,46 @@ async function deliverEnquiry(input: EnquiryInput): Promise<void> {
     ...(input.budget ? { budget: input.budget } : {}),
     ...(input.timeline ? { timeline: input.timeline } : {}),
     message: input.message,
-    submittedAt: new Date().toISOString(),
+    submittedAt,
+  });
+}
+
+async function deliverToNexus(input: EnquiryInput, submittedAt: string): Promise<void> {
+  const detail = [
+    input.company ? `Company: ${input.company}` : null,
+    input.budget ? `Budget: ${input.budget}` : null,
+    input.timeline ? `Timeline: ${input.timeline}` : null,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  await appendToNexusLog(ENQUIRY_NEXUS_KEY, {
+    author: 'website',
+    role: 'system',
+    text: `New enquiry from ${input.name} <${input.email}>\n${detail}\n\n${input.message}`,
+    data: { kind: 'enquiry', ...input, submittedAt },
+    at: submittedAt,
   });
 }
 
 export async function submitEnquiry(input: EnquiryInput): Promise<EnquiryResult> {
   if (!enquiriesConfigured()) return { ok: false, reason: 'unconfigured' };
-  try {
-    await deliverEnquiry(input);
-    return { ok: true };
-  } catch (error) {
-    // Never drop a message silently — the route tells the visitor to email
-    // instead, and the reason lands in the server log.
-    console.error('enquiry delivery failed', error);
-    return { ok: false, reason: 'error' };
+
+  const submittedAt = new Date().toISOString();
+  const channels: Array<Promise<void>> = [];
+  if (writeClient) channels.push(deliverToSanity(input, submittedAt));
+  if (ENQUIRY_NEXUS_KEY) channels.push(deliverToNexus(input, submittedAt));
+
+  const settled = await Promise.allSettled(channels);
+
+  // Never drop a message silently — every failure lands in the server log even
+  // when another channel succeeded, so a half-broken setup is still visible.
+  for (const outcome of settled) {
+    if (outcome.status === 'rejected') {
+      console.error('enquiry delivery failed', outcome.reason);
+    }
   }
+
+  const delivered = settled.some((outcome) => outcome.status === 'fulfilled');
+  return delivered ? { ok: true } : { ok: false, reason: 'error' };
 }

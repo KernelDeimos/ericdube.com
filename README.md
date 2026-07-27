@@ -35,17 +35,26 @@ configure the connection (used server-side only, never exposed to the browser):
 
 ## Services page enquiries
 
-The contact form on `/services` writes an `enquiry` document into Sanity, which
-you triage in the Studio. One environment variable configures it (server-side
-only, never exposed to the browser):
+The contact form on `/services` delivers to two independent channels, each
+enabled by its own environment variable (server-side only, never exposed to the
+browser). Set either, or both:
 
 - `SANITY_WRITE_TOKEN` — a Sanity token with write access to the `production`
-  dataset. Without it the form stays visible but tells the visitor it is not
-  hooked up and points them at the mailto link, so a message is never silently
-  dropped.
+  dataset. Creates an `enquiry` document you triage in the Studio: status,
+  private notes, and a reference to the service it came from. This is the
+  durable record.
+- `ENQUIRY_NEXUS_KEY` — a claude-nexus log key (e.g. `pub.enquiries`) to
+  announce each enquiry on, so it shows up live. Reuses the `NEXUS_URL` /
+  `NEXUS_TOKEN` above; the key is created on first write.
 
-Where enquiries land is isolated in `app/lib/enquiries.ts` — swapping Sanity for
-email (Resend/SMTP) or the nexus node means rewriting `deliverEnquiry` alone.
+A submission succeeds if **at least one** channel accepts it, so nexus alone is
+a valid setup and a nexus outage cannot lose an enquiry Sanity already stored.
+Every channel failure is logged server-side even when another succeeded. With
+neither variable set the form tells the visitor it is not hooked up and offers a
+mailto, so a message is never silently dropped.
+
+Delivery lives in `app/lib/enquiries.ts` — adding email (Resend/SMTP) means one
+more `deliverTo*` function alongside the existing two.
 
 ## Building for Production
 
