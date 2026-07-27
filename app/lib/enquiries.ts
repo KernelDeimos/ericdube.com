@@ -19,7 +19,10 @@ import { createClient } from '@sanity/client';
 import { appendToNexusLog } from './nexus';
 
 const SANITY_WRITE_TOKEN = process.env.SANITY_WRITE_TOKEN ?? '';
-const ENQUIRY_NEXUS_KEY = process.env.ENQUIRY_NEXUS_KEY ?? '';
+// Nexus is the default channel: the node runs on the same server and needs no
+// credentials on trusted loopback, so enquiries land somewhere out of the box.
+// Set to an empty string to turn the channel off.
+const ENQUIRY_NEXUS_KEY = process.env.ENQUIRY_NEXUS_KEY ?? 'pub.enquiries';
 
 export type EnquiryInput = {
   name: string;
@@ -36,6 +39,17 @@ export type EnquiryResult =
   /** No delivery channel configured — the form should fall back to mailto. */
   | { ok: false; reason: 'unconfigured' }
   | { ok: false; reason: 'error' };
+
+// Deliberately lives in this server-only module rather than in the route file.
+// Anything in a route module's shared scope ends up in the public client
+// bundle, where a scraper can read it straight out of the JS even if the page
+// never renders it. The address is handed to the browser only in the body of a
+// failed submission, so a plain GET of /services never carries it.
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'eric.alex.dube@gmail.com';
+
+export function contactMailto(subject = 'Freelance enquiry'): string {
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`;
+}
 
 export function enquiriesConfigured(): boolean {
   return SANITY_WRITE_TOKEN !== '' || ENQUIRY_NEXUS_KEY !== '';

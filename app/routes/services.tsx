@@ -3,7 +3,7 @@ import { client } from '~/sanity/client';
 import Container from '~/components/Container';
 import ServiceCard, { type Service } from '~/components/ServiceCard';
 import ContactForm, { type ContactFormResult } from '~/components/ContactForm';
-import { submitEnquiry } from '~/lib/enquiries';
+import { submitEnquiry, contactMailto } from '~/lib/enquiries';
 import styles from './services.module.css';
 
 type ProcessStep = { title: string; description: string | null };
@@ -21,7 +21,6 @@ type ServicesPage = {
   faqs: Faq[] | null;
   ctaHeading: string | null;
   ctaBody: string | null;
-  contactEmail: string | null;
   schedulingUrl: string | null;
   seoDescription: string | null;
 } | null;
@@ -42,7 +41,6 @@ const FALLBACK = {
   ctaHeading: 'Have something in mind?',
   ctaBody:
     'Send over a short description of the problem, roughly when you need it, and any budget you have in mind. I answer every enquiry, even the ones I have to turn down.',
-  contactEmail: 'eric.alex.dube@gmail.com',
 };
 
 export async function loader() {
@@ -60,7 +58,6 @@ export async function loader() {
         faqs[] { question, answer },
         ctaHeading,
         ctaBody,
-        contactEmail,
         schedulingUrl,
         seoDescription
       }`
@@ -117,7 +114,7 @@ export async function action({ request }: { request: Request }) {
     errors.message = 'That is over 5000 characters — trim it and send the rest by email.';
 
   if (Object.keys(errors).length > 0) {
-    return { ok: false, errors, formError: null } satisfies ContactFormResult;
+    return { ok: false, errors, formError: null, mailto: null } satisfies ContactFormResult;
   }
 
   const result = await submitEnquiry({
@@ -139,6 +136,7 @@ export async function action({ request }: { request: Request }) {
       result.reason === 'unconfigured'
         ? 'The contact form is not wired up to a mailbox yet.'
         : 'Something went wrong sending that.',
+    mailto: contactMailto(),
   } satisfies ContactFormResult;
 }
 
@@ -163,8 +161,6 @@ export default function Services() {
   const availability = page?.availabilityStatus
     ? AVAILABILITY[page.availabilityStatus]
     : undefined;
-  const email = page?.contactEmail || FALLBACK.contactEmail;
-  const mailto = `mailto:${email}?subject=${encodeURIComponent('Freelance enquiry')}`;
   const schedulingUrl = page?.schedulingUrl ?? null;
 
   return (
@@ -277,7 +273,6 @@ export default function Services() {
         )}
         <ContactForm
           services={services.map((s) => ({ _id: s._id, title: s.title, slug: s.slug }))}
-          mailto={mailto}
           result={result}
         />
       </section>

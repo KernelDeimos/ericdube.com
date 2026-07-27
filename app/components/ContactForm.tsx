@@ -3,17 +3,21 @@ import styles from './ContactForm.module.css';
 
 export type ContactFormResult =
   | { ok: true }
-  | { ok: false; errors: Record<string, string>; formError: string | null };
+  | {
+      ok: false;
+      errors: Record<string, string>;
+      formError: string | null;
+      /** Only sent when delivery actually failed — see contactMailto(). */
+      mailto: string | null;
+    };
 
 export type ServiceChoice = { _id: string; title: string; slug: string | null };
 
 export default function ContactForm({
   services,
-  mailto,
   result,
 }: {
   services: ServiceChoice[];
-  mailto: string;
   result: ContactFormResult | undefined;
 }) {
   const navigation = useNavigation();
@@ -40,13 +44,16 @@ export default function ContactForm({
 
   const errors = result?.ok === false ? result.errors : {};
   const formError = result?.ok === false ? result.formError : null;
+  // Present only on a delivery failure, so the address never reaches a visitor
+  // (or a scraper) who simply loaded the page.
+  const mailto = result?.ok === false ? result.mailto : null;
 
   return (
     <Form method="post" className={styles.form} replace>
       {formError && (
         <p className={styles.formError}>
           {formError}{' '}
-          <a href={mailto}>Email me directly instead</a> and nothing gets lost.
+          {mailto && <a href={mailto}>Email me directly instead</a>} and nothing gets lost.
         </p>
       )}
 
