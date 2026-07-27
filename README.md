@@ -33,6 +33,20 @@ configure the connection (used server-side only, never exposed to the browser):
 - `NEXUS_TOKEN` — an `x-nexus-token` whose tokens.yaml grant includes read on `pub.artifacts` (or `**`), scoped to read `pub.artifacts`. Omit on a
   trusted-loopback dev node; required once the node enforces tokens.
 
+## Services page enquiries
+
+The contact form on `/services` writes an `enquiry` document into Sanity, which
+you triage in the Studio. One environment variable configures it (server-side
+only, never exposed to the browser):
+
+- `SANITY_WRITE_TOKEN` — a Sanity token with write access to the `production`
+  dataset. Without it the form stays visible but tells the visitor it is not
+  hooked up and points them at the mailto link, so a message is never silently
+  dropped.
+
+Where enquiries land is isolated in `app/lib/enquiries.ts` — swapping Sanity for
+email (Resend/SMTP) or the nexus node means rewriting `deliverEnquiry` alone.
+
 ## Building for Production
 
 Create a production build:

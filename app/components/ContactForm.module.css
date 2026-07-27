@@ -1,0 +1,140 @@
+.form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem 1.25rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.fieldWide {
+    grid-column: 1 / -1;
+}
+
+.label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94a3b8;
+}
+
+.optional {
+    text-transform: none;
+    letter-spacing: 0;
+    color: #64748b;
+}
+
+.input,
+.textarea,
+.select {
+    background-color: rgba(6, 10, 4, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem;
+    padding: 0.6rem 0.75rem;
+    color: #e2e8f0;
+    font: inherit;
+    font-size: 0.95rem;
+    width: 100%;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+    outline: 2px solid var(--color-mustard);
+    outline-offset: 1px;
+    border-color: transparent;
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 8rem;
+    line-height: 1.6;
+}
+
+.inputError {
+    border-color: #f87171;
+}
+
+.error {
+    color: #f87171;
+    font-size: 0.85rem;
+}
+
+/* Off-screen spam trap — real people never fill this in. */
+.honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.actions {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+.submit {
+    background-color: var(--color-mustard);
+    color: #060a04;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.7rem 1.5rem;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.submit:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.formError {
+    grid-column: 1 / -1;
+    border: 1px solid rgba(248, 113, 113, 0.5);
+    background: rgba(248, 113, 113, 0.08);
+    border-radius: 0.5rem;
+    padding: 0.9rem 1.1rem;
+    color: #fca5a5;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.formError a {
+    color: var(--color-mustard);
+}
+
+.success {
+    border: 1px solid rgba(66, 233, 172, 0.5);
+    background: rgba(66, 233, 172, 0.08);
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.5rem;
+    color: #cbd5e1;
+    line-height: 1.7;
+}
+
+.successHeading {
+    margin: 0 0 0.5rem;
+    color: var(--color-teal);
+    font-size: 1.15rem;
+}
+
+.privacy {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-size: 0.85rem;
+    color: #64748b;
+    line-height: 1.5;
+}

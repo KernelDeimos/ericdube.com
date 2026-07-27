@@ -60,6 +60,7 @@ export default function SiteLayout() {
               gap: '2rem',
             }}>
               <NavLink to="/" end style={navLinkStyle}>Home</NavLink>
+              <NavLink to="/services" style={navLinkStyle}>Services</NavLink>
               <NavLink to="/articles" style={navLinkStyle}>Articles</NavLink>
               <NavLink to="/demos" style={navLinkStyle}>Demos</NavLink>
               <NavLink to="/artifacts" style={navLinkStyle}>Artifacts</NavLink>
