@@ -12,7 +12,7 @@
 // Defaults to ../website-coherentconstructs/index.html, i.e. the sibling
 // checkout. Pass a path (or set CC_BANNER_SOURCE) if yours lives elsewhere.
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -97,6 +97,17 @@ const factory = html.slice(wrapperOpen, wrapperClose + '</div>'.length);
 // #square1_div, which is part of the copy we dropped, so on the banner it threw
 // a TypeError every 30ms for as long as the page was open.
 
+// 3. The physics layer, which is ours rather than the source page's, so it is
+//    referenced rather than copied — otherwise a re-run would silently drop it.
+//    matter.min.js is copied out of node_modules so the served version tracks
+//    package.json instead of being a vendored blob nobody updates. Both are
+//    plain same-origin scripts, which the banner's sandbox (allow-scripts, no
+//    allow-same-origin) permits.
+copyFileSync(
+  resolve(repoRoot, 'node_modules/matter-js/build/matter.min.js'),
+  resolve(repoRoot, 'public/banners/matter.min.js')
+);
+
 const out = `<!doctype html>
 <html lang="en">
 <head>
@@ -120,6 +131,8 @@ ${factory
   .map((line) => (line.trim() ? `    ${line}` : line))
   .join('\n')}
     </div>
+<script src="matter.min.js"></script>
+<script src="cc-physics.js"></script>
 </body>
 </html>
 `;
