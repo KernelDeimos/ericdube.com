@@ -13,3 +13,8 @@ export const LUA_ANIMATIONS = [
   { name: 'torus',          source: torus },
   { name: 'fireworks',      source: fireworks },
 ];
+
+// Lookup for a whitelabel that pins one animation instead of round-robining.
+export const LUA_ANIMATIONS_BY_NAME = Object.fromEntries(
+  LUA_ANIMATIONS.map((a) => [a.name, a])
+);

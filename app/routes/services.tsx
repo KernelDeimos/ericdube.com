@@ -4,6 +4,7 @@ import Container from '~/components/Container';
 import ServiceCard, { type Service } from '~/components/ServiceCard';
 import ContactForm, { type ContactFormResult } from '~/components/ContactForm';
 import { submitEnquiry, contactMailto } from '~/lib/enquiries';
+import { resolveWebsite, requireTab } from '~/lib/website';
 import styles from './services.module.css';
 
 type ProcessStep = { title: string; description: string | null };
@@ -43,7 +44,11 @@ const FALLBACK = {
     'Send over a short description of the problem, roughly when you need it, and any budget you have in mind. I answer every enquiry, even the ones I have to turn down.',
 };
 
-export async function loader() {
+export async function loader({ request }: { request: Request }) {
+  const website = await resolveWebsite(request);
+  // A brand that does not offer Services must 404 here, not just omit the tab.
+  requireTab(website, 'services');
+
   const [page, services] = await Promise.all([
     client.fetch<ServicesPage>(
       `*[_type == "servicesPage"] | order(_updatedAt desc)[0] {
@@ -63,7 +68,8 @@ export async function loader() {
       }`
     ),
     client.fetch<Service[]>(
-      `*[_type == "service" && available != false] | order(featured desc, order asc, title asc) {
+      `*[_type == "service" && available != false
+         && (!defined($ids) || _id in $ids)] | order(featured desc, order asc, title asc) {
         _id,
         title,
         "slug": slug.current,
@@ -82,11 +88,23 @@ export async function loader() {
         turnaround,
         accentColor,
         featured
-      }`
+      }`,
+      // null (not an empty array) means "no per-brand selection, offer all".
+      { ids: website.serviceIds?.length ? website.serviceIds : null }
     ),
   ]);
 
-  return { page, services };
+  // A brand's own contact details win over the shared services page.
+  const scheduling = website.schedulingUrl ?? page?.schedulingUrl ?? null;
+
+  // Preserve the brand's chosen service order when it curated one.
+  const ordered = website.serviceIds?.length
+    ? [...services].sort(
+        (a, b) => website.serviceIds!.indexOf(a._id) - website.serviceIds!.indexOf(b._id)
+      )
+    : services;
+
+  return { page, services: ordered, scheduling };
 }
 
 function str(value: FormDataEntryValue | null): string {
@@ -94,6 +112,8 @@ function str(value: FormDataEntryValue | null): string {
 }
 
 export async function action({ request }: { request: Request }) {
+  const website = await resolveWebsite(request);
+  requireTab(website, 'services');
   const form = await request.formData();
 
   // Honeypot: bots fill in every field they find, people never see this one.
@@ -125,6 +145,8 @@ export async function action({ request }: { request: Request }) {
     budget: str(form.get('budget')) || null,
     timeline: str(form.get('timeline')) || null,
     message,
+    websiteId: website._id,
+    websiteName: website.name,
   });
 
   if (result.ok) return { ok: true } satisfies ContactFormResult;
@@ -136,7 +158,7 @@ export async function action({ request }: { request: Request }) {
       result.reason === 'unconfigured'
         ? 'The contact form is not wired up to a mailbox yet.'
         : 'Something went wrong sending that.',
-    mailto: contactMailto(),
+    mailto: contactMailto(website.contactEmail),
   } satisfies ContactFormResult;
 }
 
@@ -152,7 +174,7 @@ export function meta({ data }: { data: Awaited<ReturnType<typeof loader>> | unde
 }
 
 export default function Services() {
-  const { page, services } = useLoaderData<typeof loader>();
+  const { page, services, scheduling } = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
 
   const heading = page?.heading || FALLBACK.heading;
@@ -161,7 +183,7 @@ export default function Services() {
   const availability = page?.availabilityStatus
     ? AVAILABILITY[page.availabilityStatus]
     : undefined;
-  const schedulingUrl = page?.schedulingUrl ?? null;
+  const schedulingUrl = scheduling;
 
   return (
     <Container style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>

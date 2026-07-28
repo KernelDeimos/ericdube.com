@@ -32,6 +32,9 @@ export type EnquiryInput = {
   budget: string | null;
   timeline: string | null;
   message: string;
+  /** Which whitelabel brand the enquiry came through. */
+  websiteId: string | null;
+  websiteName: string | null;
 };
 
 export type EnquiryResult =
@@ -47,8 +50,14 @@ export type EnquiryResult =
 // failed submission, so a plain GET of /services never carries it.
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'eric.alex.dube@gmail.com';
 
-export function contactMailto(subject = 'Freelance enquiry'): string {
-  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`;
+// `override` lets a whitelabel brand point at its own address; falls back to
+// the site-wide one so a brand without contact details still works.
+export function contactMailto(
+  override?: string | null,
+  subject = 'Freelance enquiry'
+): string {
+  const address = override?.trim() || CONTACT_EMAIL;
+  return `mailto:${address}?subject=${encodeURIComponent(subject)}`;
 }
 
 export function enquiriesConfigured(): boolean {
@@ -78,6 +87,9 @@ async function deliverToSanity(input: EnquiryInput, submittedAt: string): Promis
       : {}),
     ...(input.budget ? { budget: input.budget } : {}),
     ...(input.timeline ? { timeline: input.timeline } : {}),
+    ...(input.websiteId
+      ? { website: { _type: 'reference', _ref: input.websiteId } }
+      : {}),
     message: input.message,
     submittedAt,
   });
@@ -85,6 +97,7 @@ async function deliverToSanity(input: EnquiryInput, submittedAt: string): Promis
 
 async function deliverToNexus(input: EnquiryInput, submittedAt: string): Promise<void> {
   const detail = [
+    input.websiteName ? `Site: ${input.websiteName}` : null,
     input.company ? `Company: ${input.company}` : null,
     input.budget ? `Budget: ${input.budget}` : null,
     input.timeline ? `Timeline: ${input.timeline}` : null,
