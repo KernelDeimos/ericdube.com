@@ -74,8 +74,10 @@ export const LIGHT_THEME_TOKENS = [
   '--site-foreground: #0f172a;',
   '--site-foreground-muted: #475569;',
   '--site-foreground-subtle: #64748b;',
-  '--site-wordmark-veil: rgba(255, 255, 255, 0.55);',
-  '--site-nav-veil: rgba(15, 23, 42, 0.06);',
+  // Veil colours flip with the theme; their strength stays a brand's to set, so
+  // both variants scale from the same custom property (see app.css).
+  '--site-wordmark-veil: rgb(255 255 255 / calc(0.55 * var(--site-veil-strength)));',
+  '--site-nav-veil: rgb(15 23 42 / calc(0.06 * var(--site-veil-strength)));',
   '--site-surface: rgba(15, 23, 42, 0.04);',
   '--site-surface-strong: rgba(15, 23, 42, 0.08);',
   '--site-surface-subtle: rgba(15, 23, 42, 0.05);',
@@ -126,6 +128,8 @@ export type Website = {
   bannerUrl: string | null;
   bannerHtml: string | null;
   bannerHeight: number | null;
+  headerBlur: number | null;
+  headerVeilStrength: number | null;
   homePage: unknown[] | null;
   tags: string[] | null;
   servicesPageId: string | null;
@@ -159,6 +163,8 @@ export type PublicWebsite = Pick<
   | 'bannerUrl'
   | 'bannerHtml'
   | 'bannerHeight'
+  | 'headerBlur'
+  | 'headerVeilStrength'
 >;
 
 export function publicWebsite(website: Website): PublicWebsite {
@@ -174,7 +180,40 @@ export function publicWebsite(website: Website): PublicWebsite {
     bannerUrl: website.bannerUrl,
     bannerHtml: website.bannerHtml,
     bannerHeight: website.bannerHeight,
+    headerBlur: website.headerBlur,
+    headerVeilStrength: website.headerVeilStrength,
   };
+}
+
+/**
+ * The header's blur and veil strength as CSS declarations, or '' for a brand
+ * that has set neither.
+ *
+ * Both are clamped rather than trusted. They come from a CMS field and are
+ * interpolated into a `<style>` block, so a non-number or a wild value has to be
+ * impossible here rather than merely unlikely — the same reason colorHex refuses
+ * anything that is not a hex colour. The upper bounds are the point at which the
+ * setting stops being a setting: past ~80px of blur the banner is a smear, and a
+ * veil at 3x is opaque enough to be a solid bar.
+ */
+export function headerTokens(website: {
+  headerBlur?: number | null;
+  headerVeilStrength?: number | null;
+}): string {
+  const clamp = (value: unknown, min: number, max: number): number | null =>
+    typeof value === 'number' && Number.isFinite(value)
+      ? Math.min(Math.max(value, min), max)
+      : null;
+
+  const blur = clamp(website.headerBlur, 0, 80);
+  const veil = clamp(website.headerVeilStrength, 0, 3);
+
+  return [
+    blur === null ? '' : `--site-header-blur: ${blur}px;`,
+    veil === null ? '' : `--site-veil-strength: ${veil};`,
+  ]
+    .filter(Boolean)
+    .join(' ');
 }
 
 /** Label and path for every tab, so navigation renders from config alone. */
@@ -229,6 +268,8 @@ const BUILT_IN_DEFAULT: Website = {
   bannerUrl: null,
   bannerHtml: null,
   bannerHeight: null,
+  headerBlur: null,
+  headerVeilStrength: null,
   homePage: null,
   tags: null,
   servicesPageId: null,
@@ -270,6 +311,8 @@ const WEBSITE_PROJECTION = `{
   bannerUrl,
   bannerHtml,
   bannerHeight,
+  headerBlur,
+  headerVeilStrength,
   homePage[]{...},
   tags,
   tabs,

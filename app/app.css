@@ -19,8 +19,18 @@
   --site-foreground: #e2e8f0;
   --site-foreground-muted: #94a3b8;
   --site-foreground-subtle: #64748b;
-  --site-wordmark-veil: rgba(0, 0, 0, 0.45);
-  --site-nav-veil: rgba(255, 255, 255, 0.08);
+
+  /* Header chrome over the banner. A brand overrides these two to dial the
+     header down over a busy banner or up over a quiet one; the veils and the
+     three blur radii are all derived from them so their relative strengths stay
+     as designed. Blur is one number rather than three because the 20/8/12 split
+     between the edges, the wordmark and the nav is a ratio, not three
+     independent choices. */
+  --site-header-blur: 20px;
+  --site-veil-strength: 1;
+
+  --site-wordmark-veil: rgb(0 0 0 / calc(0.45 * var(--site-veil-strength)));
+  --site-nav-veil: rgb(255 255 255 / calc(0.08 * var(--site-veil-strength)));
 
   /* Panels and cards */
   --site-surface: rgba(34, 49, 58, 0.5);

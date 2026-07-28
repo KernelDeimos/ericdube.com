@@ -1,7 +1,12 @@
 /* Home page sections.
    Every colour here comes from a theme custom property, so a brand with a pale
    background gets readable output from the same markup as a dark one. Do not
-   introduce fixed colours in this file. */
+   introduce fixed colours in this file.
+
+   Panels use --site-surface-subtle, not --site-nav-veil. They read almost
+   identically, but the nav veil is header chrome and a brand can now scale its
+   strength; borrowing it here meant turning the header's tint down also faded
+   every card on the home page. */
 
 .section {
   padding: 3rem 0;
@@ -76,7 +81,7 @@
 .card {
   padding: 1.5rem;
   border-radius: 0.75rem;
-  background-color: var(--site-nav-veil);
+  background-color: var(--site-surface-subtle);
 }
 
 .icon {
@@ -128,7 +133,7 @@
   margin: 0;
   padding: 2rem;
   border-radius: 0.75rem;
-  background-color: var(--site-nav-veil);
+  background-color: var(--site-surface-subtle);
   max-width: 55rem;
 }
 
@@ -198,7 +203,7 @@
   margin: 3rem 0;
   padding: 3rem 2rem;
   border-radius: 0.75rem;
-  background-color: var(--site-nav-veil);
+  background-color: var(--site-surface-subtle);
   text-align: center;
 }
 
@@ -218,7 +223,7 @@
 
 .faq {
   border-radius: 0.5rem;
-  background-color: var(--site-nav-veil);
+  background-color: var(--site-surface-subtle);
   padding: 1rem 1.25rem;
 }
 

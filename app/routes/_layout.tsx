@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Outlet, NavLink, useLocation, useLoaderData } from 'react-router';
 import RandomCanvasAnimation from '~/components/RandomCanvasAnimation';
 import { LUA_ANIMATIONS, LUA_ANIMATIONS_BY_NAME } from '~/components/lua-animations';
-import Container from '~/components/Container';
+import Container, { CONTAINER_MAX_WIDTH } from '~/components/Container';
 import { urlFor } from '~/sanity/image';
 import {
   resolveWebsite,
@@ -13,8 +13,44 @@ import {
   requireTabForRequest,
   publicWebsite,
   LIGHT_THEME_TOKENS,
+  headerTokens,
 } from '~/lib/website';
 import StaticBanner from '~/components/StaticBanner';
+
+/**
+ * The edge blur and the header's clear middle.
+ *
+ * The blurred layer covers the whole banner and is masked away across a window
+ * exactly as wide as the header's container, so the middle of the banner stays
+ * crisp behind the wordmark and nav. That put the mask's edge in precisely the
+ * same place as the edge of the nav's own blurred box, and two independent
+ * antialiasing decisions on one boundary leave a hairline of unblurred banner
+ * between them — the 1px seam.
+ *
+ * The fix is to stop them sharing a boundary: the mask window is a couple of
+ * pixels narrower than the container, so the edge blur runs on under the
+ * wordmark and nav rather than stopping alongside them. In the vertical gap
+ * between those two boxes the bleed is visible in principle, but the edge of a
+ * blurred region is a soft transition anyway, so two pixels of it reads as
+ * nothing. A gradient ramp instead of a hard stop was the other option and it
+ * only trades a hard seam for a soft one.
+ */
+const MASK_BLEED_PX = 2;
+const MASK_EDGE = `calc(50% - ${CONTAINER_MAX_WIDTH / 2 - MASK_BLEED_PX}px)`;
+const MASK_FAR_EDGE = `calc(50% + ${CONTAINER_MAX_WIDTH / 2 - MASK_BLEED_PX}px)`;
+const EDGE_BLUR_MASK =
+  `linear-gradient(to right, black ${MASK_EDGE}, transparent ${MASK_EDGE},` +
+  ` transparent ${MASK_FAR_EDGE}, black ${MASK_FAR_EDGE})`;
+
+/**
+ * The three blurs are one brand setting, scaled. Their 20/8/12 split is a
+ * relationship between the layers rather than three independent choices: the
+ * edges hide the most, the nav sits over text and hides less, the wordmark least
+ * of all. A brand dials --site-header-blur and the relationship holds.
+ */
+const EDGE_BLUR = 'blur(var(--site-header-blur))';
+const WORDMARK_BLUR = 'blur(calc(var(--site-header-blur) * 0.4))';
+const NAV_BLUR = 'blur(calc(var(--site-header-blur) * 0.6))';
 
 export async function loader({ request }: { request: Request }) {
   const website = await resolveWebsite(request);
@@ -80,6 +116,9 @@ export default function SiteLayout() {
     accentSecondary ? `--color-teal: ${accentSecondary};` : '',
     background ? `--site-background: ${background};` : '',
     light ? LIGHT_THEME_TOKENS : '',
+    // After the light block, which also names the veil tokens: a brand's header
+    // settings have to win over the theme's defaults, not the other way round.
+    headerTokens(website),
   ]
     .filter(Boolean)
     .join(' ');
@@ -141,10 +180,10 @@ export default function SiteLayout() {
             <div style={{
               position: 'absolute',
               inset: 0,
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              maskImage: 'linear-gradient(to right, black calc(50% - 600px), transparent calc(50% - 600px), transparent calc(50% + 600px), black calc(50% + 600px))',
-              WebkitMaskImage: 'linear-gradient(to right, black calc(50% - 600px), transparent calc(50% - 600px), transparent calc(50% + 600px), black calc(50% + 600px))',
+              backdropFilter: EDGE_BLUR,
+              WebkitBackdropFilter: EDGE_BLUR,
+              maskImage: EDGE_BLUR_MASK,
+              WebkitMaskImage: EDGE_BLUR_MASK,
             }} />
           </>
         )}
@@ -173,7 +212,8 @@ export default function SiteLayout() {
             }}
           >
             <div style={{
-              backdropFilter: 'blur(8px)',
+              backdropFilter: WORDMARK_BLUR,
+              WebkitBackdropFilter: WORDMARK_BLUR,
               backgroundColor: 'var(--site-wordmark-veil)',
               padding: '0.5rem 2rem',
             }}>
@@ -191,7 +231,8 @@ export default function SiteLayout() {
             </div>
             <nav style={{
               alignSelf: 'stretch',
-              backdropFilter: 'blur(12px)',
+              backdropFilter: NAV_BLUR,
+              WebkitBackdropFilter: NAV_BLUR,
               backgroundColor: 'var(--site-nav-veil)',
               padding: '0.5rem 2rem',
               display: 'flex',
