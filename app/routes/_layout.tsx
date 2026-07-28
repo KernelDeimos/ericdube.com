@@ -91,10 +91,16 @@ export default function SiteLayout() {
       <div
         style={{
           position: 'relative',
+          // Always a column so the nav can be pinned to the bottom of the
+          // header. Without a custom banner height this changes nothing — the
+          // header is only as tall as its contents, so bottom is where the nav
+          // already sat.
+          display: 'flex',
+          flexDirection: 'column',
           // The banner is otherwise only as tall as the wordmark and nav, which
           // crops most static banners to a sliver of their artwork.
           ...(showBanner && website.bannerHeight
-            ? { minHeight: `${website.bannerHeight}px`, display: 'flex', flexDirection: 'column' }
+            ? { minHeight: `${website.bannerHeight}px` }
             : null),
         }}
       >
@@ -123,8 +129,20 @@ export default function SiteLayout() {
             }} />
           </>
         )}
-        <Container style={{ position: 'relative', padding: '0' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+        <Container
+          style={{ position: 'relative', padding: '0', flex: 1, display: 'flex', flexDirection: 'column' }}
+        >
+          {/* Wordmark rides the top of the header, nav the bottom, whatever
+              height the brand's banner asks for. */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              flex: 1,
+            }}
+          >
             <div style={{
               backdropFilter: 'blur(8px)',
               backgroundColor: 'var(--site-wordmark-veil)',
