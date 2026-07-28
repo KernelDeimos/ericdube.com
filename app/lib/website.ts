@@ -13,6 +13,56 @@ export type SiteTab =
   | 'musings'
   | 'weird-food';
 
+/**
+ * The colour fields were plain hex strings before the Studio gained a colour
+ * picker, which stores an object instead. Both shapes are accepted so a
+ * document authored under the old schema keeps rendering rather than losing its
+ * branding the moment the picker ships.
+ */
+export type ColorValue = string | { hex?: string | null } | null;
+
+/** Narrow either colour shape to something a CSS custom property can take. */
+export function colorHex(value: ColorValue): string | null {
+  if (!value) return null;
+  const hex = typeof value === 'string' ? value : value.hex;
+  if (!hex) return null;
+  // Interpolated straight into a <style> block, so anything that is not
+  // unambiguously a hex colour is dropped rather than escaped.
+  return /^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(hex.trim())
+    ? hex.trim()
+    : null;
+}
+
+/**
+ * Whether text on this background needs to be dark. The site is built dark
+ * first, but a brand is free to pick a pale background, and the chrome — nav
+ * links, the wordmark veil — has to follow or it becomes invisible against it.
+ * Relative luminance per WCAG, thresholded where the contrast of the light and
+ * dark foregrounds crosses over.
+ */
+export function isLightBackground(hex: string): boolean {
+  const raw = hex.replace('#', '');
+  const full =
+    raw.length === 3 || raw.length === 4
+      ? raw
+          .slice(0, 3)
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : raw.slice(0, 6);
+  if (full.length !== 6) return false;
+
+  const channel = (pair: string) => {
+    const v = parseInt(pair, 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  const luminance =
+    0.2126 * channel(full.slice(0, 2)) +
+    0.7152 * channel(full.slice(2, 4)) +
+    0.0722 * channel(full.slice(4, 6));
+  return luminance > 0.4;
+}
+
 export type Website = {
   _id: string | null;
   name: string;
@@ -21,10 +71,13 @@ export type Website = {
   siteTitle: string;
   tagline: string | null;
   logo: { asset: object; alt: string | null } | null;
-  accentPrimary: string | null;
-  accentSecondary: string | null;
-  backgroundColor: string | null;
+  accentPrimary: ColorValue;
+  accentSecondary: ColorValue;
+  backgroundColor: ColorValue;
   bannerAnimation: string | null;
+  bannerUrl: string | null;
+  bannerHtml: string | null;
+  bannerHeight: number | null;
   tabs: SiteTab[] | null;
   serviceIds: string[] | null;
   contactEmail: string | null;
@@ -78,6 +131,9 @@ const BUILT_IN_DEFAULT: Website = {
   accentSecondary: null,
   backgroundColor: null,
   bannerAnimation: 'random',
+  bannerUrl: null,
+  bannerHtml: null,
+  bannerHeight: null,
   tabs: null, // null means "every tab", matching pre-whitelabel behaviour
   serviceIds: null,
   contactEmail: null,
@@ -110,6 +166,9 @@ const WEBSITE_PROJECTION = `{
   accentSecondary,
   backgroundColor,
   bannerAnimation,
+  bannerUrl,
+  bannerHtml,
+  bannerHeight,
   tabs,
   "serviceIds": services[]->_id,
   contactEmail,

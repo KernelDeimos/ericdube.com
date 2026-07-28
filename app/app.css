@@ -8,9 +8,19 @@
   --color-sky: #3babef;
 }
 
+/* Chrome colours a brand's background can flip. Defaults are the dark theme;
+   a light brand overrides them in the per-request style block rather than
+   every component learning about themes. */
+:root {
+  --site-foreground: #e2e8f0;
+  --site-foreground-muted: #94a3b8;
+  --site-wordmark-veil: rgba(0, 0, 0, 0.45);
+  --site-nav-veil: rgba(255, 255, 255, 0.08);
+}
+
 html,
 body {
   background-color: #060a04;
-  color: #e2e8f0;
+  color: var(--site-foreground);
   color-scheme: dark;
 }

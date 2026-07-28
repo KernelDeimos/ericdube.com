@@ -69,7 +69,7 @@ export async function loader({ request }: { request: Request }) {
     ),
     client.fetch<Service[]>(
       `*[_type == "service" && available != false
-         && (!defined($ids) || _id in $ids)] | order(featured desc, order asc, title asc) {
+         && _id in $ids] | order(featured desc, order asc, title asc) {
         _id,
         title,
         "slug": slug.current,
@@ -89,20 +89,19 @@ export async function loader({ request }: { request: Request }) {
         accentColor,
         featured
       }`,
-      // null (not an empty array) means "no per-brand selection, offer all".
-      { ids: website.serviceIds?.length ? website.serviceIds : null }
+      // A brand offers exactly what it selected — nothing more. An empty
+      // selection means an empty page, not the whole catalogue: a new brand
+      // must not silently advertise every service the moment it is created.
+      { ids: website.serviceIds ?? [] }
     ),
   ]);
 
   // A brand's own contact details win over the shared services page.
   const scheduling = website.schedulingUrl ?? page?.schedulingUrl ?? null;
 
-  // Preserve the brand's chosen service order when it curated one.
-  const ordered = website.serviceIds?.length
-    ? [...services].sort(
-        (a, b) => website.serviceIds!.indexOf(a._id) - website.serviceIds!.indexOf(b._id)
-      )
-    : services;
+  // Selection order is display order.
+  const ids = website.serviceIds ?? [];
+  const ordered = [...services].sort((a, b) => ids.indexOf(a._id) - ids.indexOf(b._id));
 
   return { page, services: ordered, scheduling };
 }

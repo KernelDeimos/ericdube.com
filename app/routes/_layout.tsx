@@ -4,7 +4,8 @@ import RandomCanvasAnimation from '~/components/RandomCanvasAnimation';
 import { LUA_ANIMATIONS, LUA_ANIMATIONS_BY_NAME } from '~/components/lua-animations';
 import Container from '~/components/Container';
 import { urlFor } from '~/sanity/image';
-import { resolveWebsite, navTabs, TAB_META } from '~/lib/website';
+import { resolveWebsite, navTabs, TAB_META, colorHex, isLightBackground } from '~/lib/website';
+import StaticBanner from '~/components/StaticBanner';
 
 export async function loader({ request }: { request: Request }) {
   const website = await resolveWebsite(request);
@@ -12,7 +13,9 @@ export async function loader({ request }: { request: Request }) {
 }
 
 const navLinkStyle = ({ isActive }: { isActive: boolean }) => ({
-  color: isActive ? '#fff' : '#94a3b8',
+  // Both sides of this come from the theme: on a pale brand background the old
+  // hardcoded #fff made the active link invisible.
+  color: isActive ? 'var(--site-foreground)' : 'var(--site-foreground-muted)',
   textDecoration: 'none',
   fontWeight: isActive ? 600 : 400,
 });
@@ -32,21 +35,40 @@ export default function SiteLayout() {
     setStep((s) => s + 1);
   }, [pathname]);
 
-  // A brand can pin one animation, or opt out of the banner entirely.
-  const pinned = website.bannerAnimation && website.bannerAnimation !== 'random'
-    ? LUA_ANIMATIONS_BY_NAME[website.bannerAnimation]
-    : undefined;
+  // A brand runs one of the built-in animations, its own static site, or no
+  // banner at all.
+  const isStatic = website.bannerAnimation === 'static';
+  const staticHtml = isStatic ? website.bannerHtml : null;
+  const staticUrl = isStatic ? website.bannerUrl : null;
+
+  const pinned =
+    website.bannerAnimation && website.bannerAnimation !== 'random'
+      ? LUA_ANIMATIONS_BY_NAME[website.bannerAnimation]
+      : undefined;
   const animation = pinned ?? LUA_ANIMATIONS[step % LUA_ANIMATIONS.length];
-  const showBanner = website.bannerAnimation !== 'none';
+
+  // A brand set to "static" that has supplied nothing gets no banner rather
+  // than silently falling back to one of my animations under its own name.
+  const showBanner =
+    website.bannerAnimation !== 'none' && (!isStatic || Boolean(staticHtml || staticUrl));
 
   // Brand colours ride on the same custom properties the pages already use, so
   // per-brand theming needs no changes in the components themselves.
+  const accentPrimary = colorHex(website.accentPrimary);
+  const accentSecondary = colorHex(website.accentSecondary);
+  const background = colorHex(website.backgroundColor);
+
+  // A brand that picks a pale background gets the whole chrome inverted, not
+  // just the backdrop — otherwise its nav and wordmark vanish into it.
+  const light = background ? isLightBackground(background) : false;
   const themeVars = [
-    website.accentPrimary ? `--color-mustard: ${website.accentPrimary};` : '',
-    website.accentSecondary ? `--color-teal: ${website.accentSecondary};` : '',
-    website.backgroundColor
-      ? `--site-background: ${website.backgroundColor};`
-      : '',
+    accentPrimary ? `--color-mustard: ${accentPrimary};` : '',
+    accentSecondary ? `--color-teal: ${accentSecondary};` : '',
+    background ? `--site-background: ${background};` : '',
+    light ? '--site-foreground: #0f172a;' : '',
+    light ? '--site-foreground-muted: #475569;' : '',
+    light ? '--site-wordmark-veil: rgba(255, 255, 255, 0.55);' : '',
+    light ? '--site-nav-veil: rgba(15, 23, 42, 0.06);' : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -57,20 +79,40 @@ export default function SiteLayout() {
         <style
           dangerouslySetInnerHTML={{
             __html: `:root { ${themeVars} }${
-              website.backgroundColor
-                ? ` html, body { background-color: ${website.backgroundColor}; }`
+              background
+                ? ` html, body { background-color: ${background}; color-scheme: ${
+                    light ? 'light' : 'dark'
+                  }; }`
                 : ''
             }`,
           }}
         />
       )}
-      <div style={{ position: 'relative' }}>
+      <div
+        style={{
+          position: 'relative',
+          // The banner is otherwise only as tall as the wordmark and nav, which
+          // crops most static banners to a sliver of their artwork.
+          ...(showBanner && website.bannerHeight
+            ? { minHeight: `${website.bannerHeight}px`, display: 'flex', flexDirection: 'column' }
+            : null),
+        }}
+      >
         {showBanner && (
           <>
-            <RandomCanvasAnimation
-              script={animation}
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
-            />
+            {isStatic ? (
+              <StaticBanner
+                html={staticHtml}
+                url={staticUrl}
+                title={`${website.siteTitle} banner`}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+              />
+            ) : (
+              <RandomCanvasAnimation
+                script={animation}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+              />
+            )}
             <div style={{
               position: 'absolute',
               inset: 0,
@@ -85,7 +127,7 @@ export default function SiteLayout() {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <div style={{
               backdropFilter: 'blur(8px)',
-              backgroundColor: 'rgba(0,0,0,0.45)',
+              backgroundColor: 'var(--site-wordmark-veil)',
               padding: '0.5rem 2rem',
             }}>
               {website.logo ? (
@@ -103,7 +145,7 @@ export default function SiteLayout() {
             <nav style={{
               alignSelf: 'stretch',
               backdropFilter: 'blur(12px)',
-              backgroundColor: 'rgba(255,255,255,0.08)',
+              backgroundColor: 'var(--site-nav-veil)',
               padding: '0.5rem 2rem',
               display: 'flex',
               alignItems: 'center',
