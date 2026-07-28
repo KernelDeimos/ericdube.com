@@ -97,6 +97,7 @@ export type Website = {
   bannerUrl: string | null;
   bannerHtml: string | null;
   bannerHeight: number | null;
+  homePage: unknown[] | null;
   tabs: SiteTab[] | null;
   serviceIds: string[] | null;
   contactEmail: string | null;
@@ -153,6 +154,7 @@ const BUILT_IN_DEFAULT: Website = {
   bannerUrl: null,
   bannerHtml: null,
   bannerHeight: null,
+  homePage: null,
   tabs: null, // null means "every tab", matching pre-whitelabel behaviour
   serviceIds: null,
   contactEmail: null,
@@ -188,6 +190,7 @@ const WEBSITE_PROJECTION = `{
   bannerUrl,
   bannerHtml,
   bannerHeight,
+  homePage[]{...},
   tabs,
   "serviceIds": services[]->_id,
   contactEmail,

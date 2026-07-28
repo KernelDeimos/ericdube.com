@@ -1,0 +1,261 @@
+/* Home page sections.
+   Every colour here comes from a theme custom property, so a brand with a pale
+   background gets readable output from the same markup as a dark one. Do not
+   introduce fixed colours in this file. */
+
+.section {
+  padding: 3rem 0;
+}
+
+.heading {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  margin: 0 0 1.5rem;
+  color: var(--site-foreground);
+}
+
+.lead {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--site-foreground-muted);
+  margin: 0 0 1.5rem;
+  max-width: 60ch;
+}
+
+/* Hero */
+
+.hero {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 4rem 0 3rem;
+}
+
+.heroText {
+  flex: 1 1 20rem;
+}
+
+.heroHeading {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.1;
+  margin: 0 0 1rem;
+  color: var(--site-foreground);
+}
+
+.heroImage {
+  flex: 1 1 20rem;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+
+/* Buttons */
+
+.button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-mustard);
+  color: #0f172a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+/* Feature grid */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--site-nav-veil);
+}
+
+.icon {
+  width: 3rem;
+  height: auto;
+  margin-bottom: 0.75rem;
+}
+
+.cardTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  color: var(--color-teal);
+}
+
+.cardBody {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--site-foreground-muted);
+}
+
+/* Stats */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 1.5rem;
+  margin: 0;
+}
+
+.stat {
+  margin: 0;
+}
+
+.statValue {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--color-mustard);
+  margin: 0;
+}
+
+.statLabel {
+  margin: 0.25rem 0 0;
+  color: var(--site-foreground-muted);
+}
+
+/* Testimonial */
+
+.testimonial {
+  margin: 0;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  background-color: var(--site-nav-veil);
+  max-width: 55rem;
+}
+
+.quote {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--site-foreground);
+}
+
+.quote::before {
+  content: '“';
+}
+
+.quote::after {
+  content: '”';
+}
+
+.attribution {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  color: var(--site-foreground-muted);
+}
+
+.avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.role {
+  display: block;
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+/* Logo cloud */
+
+.logos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.logo {
+  height: 2.5rem;
+  width: auto;
+  /* Brand logos vary wildly in weight; muting them keeps the row coherent
+     without recolouring anyone's mark. */
+  opacity: 0.75;
+}
+
+.logo:hover {
+  opacity: 1;
+}
+
+/* CTA band */
+
+.ctaBand {
+  margin: 3rem 0;
+  padding: 3rem 2rem;
+  border-radius: 0.75rem;
+  background-color: var(--site-nav-veil);
+  text-align: center;
+}
+
+.ctaBand .lead {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* FAQ */
+
+.faqs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 55rem;
+}
+
+.faq {
+  border-radius: 0.5rem;
+  background-color: var(--site-nav-veil);
+  padding: 1rem 1.25rem;
+}
+
+.faqQuestion {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--site-foreground);
+}
+
+.faqAnswer {
+  margin: 0.75rem 0 0;
+  line-height: 1.6;
+  color: var(--site-foreground-muted);
+}
+
+/* Rich text */
+
+.richText {
+  max-width: 65ch;
+  line-height: 1.7;
+  color: var(--site-foreground);
+}
+
+.richText a {
+  color: var(--color-sky);
+}
+
+/* Minimal fallback page, for a brand that has authored nothing. */
+
+.minimal {
+  padding: 5rem 0;
+  color: var(--site-foreground-muted);
+}
+
+.minimalTagline {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  color: var(--site-foreground);
+  margin: 0;
+  max-width: 40ch;
+}
