@@ -33,15 +33,16 @@ const AVAILABILITY: Record<string, { label: string; color: string }> = {
   closed: { label: 'Not taking work right now', color: '#94a3b8' },
 };
 
-// Sensible copy for anything the CMS has not filled in yet, so the page is
-// never blank and never half-rendered.
+// Copy for anything the brand has not filled in, so the page is never blank and
+// never half-rendered. Deliberately generic: this is what an unconfigured brand
+// says about itself, so it must not put one brand's voice — or its first
+// person — in another brand's mouth.
 const FALLBACK = {
-  heading: 'Freelance development',
-  intro:
-    'I build and ship web applications — full products, focused features, and the unglamorous work of making an existing codebase behave. Tell me what you need and I will tell you honestly whether I am the right person for it.',
-  ctaHeading: 'Have something in mind?',
+  heading: 'Services',
+  intro: null as string | null,
+  ctaHeading: 'Get in touch',
   ctaBody:
-    'Send over a short description of the problem, roughly when you need it, and any budget you have in mind. I answer every enquiry, even the ones I have to turn down.',
+    'Send a short description of what you need, roughly when you need it, and any budget you have in mind.',
 };
 
 export async function loader({ request }: { request: Request }) {
@@ -50,8 +51,12 @@ export async function loader({ request }: { request: Request }) {
   requireTab(website, 'services');
 
   const [page, services] = await Promise.all([
+    // Scoped to the brand's own copy. There is no "most recently edited wins"
+    // fallback any more: a brand with no services page of its own shows the
+    // services and nothing else, rather than another brand's headline and
+    // first-person intro.
     client.fetch<ServicesPage>(
-      `*[_type == "servicesPage"] | order(_updatedAt desc)[0] {
+      `*[_type == "servicesPage" && _id == $pageId][0] {
         heading,
         intro,
         availabilityStatus,
@@ -65,7 +70,8 @@ export async function loader({ request }: { request: Request }) {
         ctaBody,
         schedulingUrl,
         seoDescription
-      }`
+      }`,
+      { pageId: website.servicesPageId }
     ),
     client.fetch<Service[]>(
       `*[_type == "service" && available != false
@@ -170,12 +176,12 @@ export function meta({
   matches: readonly SiteMetaMatch[];
 }) {
   const heading = data?.page?.heading || FALLBACK.heading;
+  const description = data?.page?.seoDescription || data?.page?.intro;
   return [
     { title: `${heading} — ${siteTitleFrom(matches)}` },
-    {
-      name: 'description',
-      content: data?.page?.seoDescription || data?.page?.intro || FALLBACK.intro,
-    },
+    // Omitted entirely rather than filled with generic filler: a brand with no
+    // copy of its own is better off with no meta description than a bland one.
+    ...(description ? [{ name: 'description', content: description }] : []),
   ];
 }
 
@@ -204,7 +210,7 @@ export default function Services() {
             )}
           </p>
         )}
-        <p className={styles.intro}>{intro}</p>
+        {intro && <p className={styles.intro}>{intro}</p>}
       </header>
 
       {page?.pricingPhilosophy && (

@@ -130,7 +130,17 @@ export default function SiteLayout() {
           </>
         )}
         <Container
-          style={{ position: 'relative', padding: '0', flex: 1, display: 'flex', flexDirection: 'column' }}
+          style={{
+            position: 'relative',
+            padding: '0',
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            // Explicit, because Container centres itself with `margin: 0 auto`
+            // and an auto cross-axis margin cancels a flex item's stretch —
+            // without this the header collapses to the width of the nav text.
+            width: '100%',
+          }}
         >
           {/* Wordmark rides the top of the header, nav the bottom, whatever
               height the brand's banner asks for. */}
