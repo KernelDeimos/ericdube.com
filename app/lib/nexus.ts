@@ -6,6 +6,13 @@
 const NEXUS_URL = (process.env.NEXUS_URL ?? 'http://127.0.0.1:42067').replace(/\/$/, '');
 const NEXUS_TOKEN = process.env.NEXUS_TOKEN ?? '';
 
+/**
+ * 'unlisted' artifacts are reachable by direct link but must never appear in a
+ * listing. Absent or unrecognised means public, so artifacts written before the
+ * field existed keep showing up.
+ */
+export type ArtifactVisibility = 'public' | 'unlisted';
+
 export type NexusArtifact = {
   id: string;
   slug: string;
@@ -16,7 +23,12 @@ export type NexusArtifact = {
   ai: { designation: string | null; score: number | null } | null;
   publishedAt: string | null;
   url: string;
+  visibility?: ArtifactVisibility | null;
 };
+
+export function isUnlisted(artifact: { visibility?: ArtifactVisibility | null }): boolean {
+  return artifact.visibility === 'unlisted';
+}
 
 function headers(): Record<string, string> {
   const h: Record<string, string> = { accept: 'application/json' };
@@ -65,17 +77,31 @@ export async function listArtifacts(): Promise<NexusArtifact[]> {
   };
   return (artifacts ?? [])
     .map((a) => ({ ...a, slug: a.slug || a.id }))
+    // The node already excludes unlisted artifacts from this endpoint. Filtering
+    // again is deliberate: a node build that predates the flag would otherwise
+    // leak an unlisted artifact into a public index, and this is the one place
+    // on the site that enumerates slugs.
+    .filter((a) => !isUnlisted(a))
     .sort((a, b) => (b.publishedAt ?? '').localeCompare(a.publishedAt ?? ''));
 }
 
-// One artifact's self-contained HTML, addressed by slug. Returns null on 404 so
+// One artifact addressed by slug: its self-contained HTML plus the visibility
+// the route needs to decide on indexing. Unlisted artifacts ARE served here —
+// that is the point of an unguessable direct link — so the caller must keep
+// them out of search results rather than refuse them. Returns null on 404 so
 // the route can throw a clean 404 response.
-export async function getArtifactHtml(slug: string): Promise<string | null> {
+export async function getArtifact(
+  slug: string
+): Promise<{ html: string; visibility: ArtifactVisibility } | null> {
   const res = await fetch(`${NEXUS_URL}/api/artifacts/${encodeURIComponent(slug)}`, {
     headers: headers(),
   });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`nexus artifact "${slug}" -> ${res.status}`);
-  const doc = (await res.json()) as { html?: string | null };
-  return doc.html ?? null;
+  const doc = (await res.json()) as {
+    html?: string | null;
+    visibility?: ArtifactVisibility | null;
+  };
+  if (!doc.html) return null;
+  return { html: doc.html, visibility: isUnlisted(doc) ? 'unlisted' : 'public' };
 }
