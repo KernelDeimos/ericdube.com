@@ -146,6 +146,7 @@ export async function action({ request }: { request: Request }) {
     message,
     websiteId: website._id,
     websiteName: website.name,
+    tags: website.tags ?? [],
   });
 
   if (result.ok) return { ok: true } satisfies ContactFormResult;

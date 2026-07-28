@@ -35,6 +35,14 @@ export type EnquiryInput = {
   /** Which whitelabel brand the enquiry came through. */
   websiteId: string | null;
   websiteName: string | null;
+  /**
+   * The brand's tags, copied at submission time. Downstream automation gates on
+   * these, and every consumer is expected to fail closed: an enquiry with no
+   * tags must trigger nothing. Copied rather than looked up later so that
+   * retagging a brand cannot retroactively change what an old enquiry would
+   * have triggered.
+   */
+  tags: string[];
 };
 
 export type EnquiryResult =
@@ -90,6 +98,7 @@ async function deliverToSanity(input: EnquiryInput, submittedAt: string): Promis
     ...(input.websiteId
       ? { website: { _type: 'reference', _ref: input.websiteId } }
       : {}),
+    ...(input.tags.length > 0 ? { tags: input.tags } : {}),
     message: input.message,
     submittedAt,
   });
@@ -109,7 +118,15 @@ async function deliverToNexus(input: EnquiryInput, submittedAt: string): Promise
     author: 'website',
     role: 'system',
     text: `New enquiry from ${input.name} <${input.email}>\n${detail}\n\n${input.message}`,
-    data: { kind: 'enquiry', ...input, submittedAt },
+    // `tags` and `website` are lifted to the top of `data` because nexus-side
+    // automations gate on them; the rest of the enquiry rides along as context.
+    data: {
+      ...input,
+      kind: 'enquiry',
+      tags: input.tags,
+      website: { id: input.websiteId, name: input.websiteName },
+      submittedAt,
+    },
     at: submittedAt,
   });
 }
