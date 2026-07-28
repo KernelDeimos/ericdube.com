@@ -117,9 +117,24 @@ const WEBSITE_PROJECTION = `{
   seoDescription
 }`;
 
+/**
+ * The hostname the visitor actually typed. Behind a reverse proxy the `host`
+ * header is the internal upstream (localhost:3102), not the brand's domain, so
+ * every brand would resolve to the default. `x-forwarded-host` carries the
+ * original and wins where present; it may hold a comma-separated chain, and
+ * only the first entry is the client-facing one.
+ *
+ * This mirrors how React Router itself picks a host for its action-origin
+ * check, so whitelabel resolution and CSRF agree on what the site is called.
+ */
+function requestHost(request: Request): string {
+  const forwarded = request.headers.get('x-forwarded-host');
+  const first = forwarded?.split(',')[0]?.trim();
+  return first || request.headers.get('host') || '';
+}
+
 export async function resolveWebsite(request: Request): Promise<Website> {
-  const host = request.headers.get('host') ?? '';
-  const candidates = normalizeHost(host);
+  const candidates = normalizeHost(requestHost(request));
 
   let websites: Website[] = [];
   try {
