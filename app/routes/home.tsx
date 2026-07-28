@@ -56,7 +56,12 @@ export async function loader({ request }: { request: Request }) {
         }`
       ),
     ]);
-    portfolio = { projects, musings };
+    portfolio = {
+      projects,
+      musings,
+      socialLinks: website.socialLinks ?? [],
+      socialHeading: website.socialHeading,
+    };
   }
 
   return { sections, portfolio, tagline: website.tagline };

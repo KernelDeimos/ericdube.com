@@ -1,7 +1,7 @@
 import { PortableText } from '@portabletext/react';
 import { Link } from 'react-router';
 import { urlFor } from '~/sanity/image';
-import SocialLinks from '../SocialLinks';
+import SocialLinks, { type SocialLink } from '../SocialLinks';
 import GitHubProjects from '../GitHubProjects';
 import MusingsCarousel from '../MusingsCarousel';
 import styles from './sections.module.css';
@@ -98,6 +98,8 @@ export type HomeSection =
 export type PortfolioData = {
   projects: Parameters<typeof GitHubProjects>[0]['projects'];
   musings: Parameters<typeof MusingsCarousel>[0]['musings'];
+  socialLinks: SocialLink[];
+  socialHeading: string | null;
 };
 
 /**
@@ -293,7 +295,9 @@ function Portfolio({
   if (!data) return null;
   return (
     <>
-      {section.showSocialLinks !== false && <SocialLinks />}
+      {section.showSocialLinks !== false && (
+        <SocialLinks links={data.socialLinks} heading={data.socialHeading} />
+      )}
       {section.showProjects !== false && <GitHubProjects projects={data.projects} />}
       {section.showMusings !== false && <MusingsCarousel musings={data.musings} />}
     </>

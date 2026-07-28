@@ -90,6 +90,9 @@ export type Website = {
   siteTitle: string;
   tagline: string | null;
   logo: { asset: object; alt: string | null } | null;
+  favicon: { asset: object } | null;
+  socialHeading: string | null;
+  socialLinks: { label: string; url: string }[] | null;
   accentPrimary: ColorValue;
   accentSecondary: ColorValue;
   backgroundColor: ColorValue;
@@ -106,6 +109,47 @@ export type Website = {
   schedulingUrl: string | null;
   seoDescription: string | null;
 };
+
+/**
+ * The subset of a brand that is safe to hand to the browser.
+ *
+ * A loader's return value is serialised into the page, so anything the layout
+ * returns is readable in the HTML of every route. The full document carries the
+ * brand's contact address, its enquiry tags and its whole home page — none of
+ * which the chrome renders. The address in particular was deliberately kept out
+ * of client code once already; sending the whole document undid that and put it
+ * on every page for a scraper to lift.
+ */
+export type PublicWebsite = Pick<
+  Website,
+  | 'siteTitle'
+  | 'tagline'
+  | 'logo'
+  | 'favicon'
+  | 'accentPrimary'
+  | 'accentSecondary'
+  | 'backgroundColor'
+  | 'bannerAnimation'
+  | 'bannerUrl'
+  | 'bannerHtml'
+  | 'bannerHeight'
+>;
+
+export function publicWebsite(website: Website): PublicWebsite {
+  return {
+    siteTitle: website.siteTitle,
+    tagline: website.tagline,
+    logo: website.logo,
+    favicon: website.favicon,
+    accentPrimary: website.accentPrimary,
+    accentSecondary: website.accentSecondary,
+    backgroundColor: website.backgroundColor,
+    bannerAnimation: website.bannerAnimation,
+    bannerUrl: website.bannerUrl,
+    bannerHtml: website.bannerHtml,
+    bannerHeight: website.bannerHeight,
+  };
+}
 
 /** Label and path for every tab, so navigation renders from config alone. */
 export const TAB_META: Record<SiteTab, { label: string; path: string }> = {
@@ -149,6 +193,9 @@ const BUILT_IN_DEFAULT: Website = {
   siteTitle: 'EricDubé.com',
   tagline: null,
   logo: null,
+  favicon: null,
+  socialHeading: null,
+  socialLinks: null,
   accentPrimary: null,
   accentSecondary: null,
   backgroundColor: null,
@@ -187,6 +234,9 @@ const WEBSITE_PROJECTION = `{
   siteTitle,
   tagline,
   logo { asset, alt },
+  favicon { asset },
+  socialHeading,
+  socialLinks[] { label, url },
   accentPrimary,
   accentSecondary,
   backgroundColor,

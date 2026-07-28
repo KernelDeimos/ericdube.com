@@ -11,6 +11,7 @@ import {
   colorHex,
   isLightBackground,
   requireTabForRequest,
+  publicWebsite,
 } from '~/lib/website';
 import StaticBanner from '~/components/StaticBanner';
 
@@ -20,7 +21,8 @@ export async function loader({ request }: { request: Request }) {
   // switched off is unreachable rather than merely unlinked — without each
   // route having to remember to check.
   requireTabForRequest(website, request);
-  return { website, tabs: navTabs(website) };
+  // Only what the chrome renders — see publicWebsite.
+  return { website: publicWebsite(website), tabs: navTabs(website) };
 }
 
 const navLinkStyle = ({ isActive }: { isActive: boolean }) => ({
@@ -84,8 +86,16 @@ export default function SiteLayout() {
     .filter(Boolean)
     .join(' ');
 
+  // React hoists this into <head>. Without it every brand serves the default
+  // /favicon.ico, which is the site owner's — the one piece of another brand's
+  // identity that survives even a fully themed page.
+  const faviconUrl = website.favicon?.asset
+    ? urlFor(website.favicon).width(64).height(64).fit('max').url()
+    : null;
+
   return (
     <>
+      {faviconUrl && <link rel="icon" href={faviconUrl} />}
       {themeVars && (
         <style
           dangerouslySetInnerHTML={{
