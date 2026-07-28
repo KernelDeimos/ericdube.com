@@ -4,11 +4,22 @@ import RandomCanvasAnimation from '~/components/RandomCanvasAnimation';
 import { LUA_ANIMATIONS, LUA_ANIMATIONS_BY_NAME } from '~/components/lua-animations';
 import Container from '~/components/Container';
 import { urlFor } from '~/sanity/image';
-import { resolveWebsite, navTabs, TAB_META, colorHex, isLightBackground } from '~/lib/website';
+import {
+  resolveWebsite,
+  navTabs,
+  TAB_META,
+  colorHex,
+  isLightBackground,
+  requireTabForRequest,
+} from '~/lib/website';
 import StaticBanner from '~/components/StaticBanner';
 
 export async function loader({ request }: { request: Request }) {
   const website = await resolveWebsite(request);
+  // Every page under this layout is gated here, so a section a brand has
+  // switched off is unreachable rather than merely unlinked — without each
+  // route having to remember to check.
+  requireTabForRequest(website, request);
   return { website, tabs: navTabs(website) };
 }
 

@@ -1,5 +1,15 @@
 import ParticleSimulator from '~/components/ParticleSimulator';
 import { particleRulesets } from '~/data/particleRulesets';
+import { resolveWebsite, requireTab } from '~/lib/website';
+
+// Full-bleed, so it renders outside the site layout and misses the tab check
+// that gates everything under it. Without this a brand that has switched Demos
+// off still serves this page to anyone with the URL.
+export async function loader({ request }: { request: Request }) {
+  const website = await resolveWebsite(request);
+  requireTab(website, 'demos');
+  return null;
+}
 
 export function meta() {
   return [

@@ -276,3 +276,30 @@ export function requireTab(website: Website, tab: SiteTab): void {
     throw new Response('Not found', { status: 404 });
   }
 }
+
+/**
+ * Which tab a URL belongs to, matching on the first path segment so detail
+ * pages are gated with their section — /articles/some-post belongs to
+ * `articles`. Returns null for anything outside the tab system, which is left
+ * alone rather than blocked.
+ */
+export function tabForPath(pathname: string): SiteTab | null {
+  const segment = pathname.split('/')[1] ?? '';
+  if (segment === '') return 'home';
+  const entry = Object.entries(TAB_META).find(([, meta]) => meta.path === `/${segment}`);
+  return entry ? (entry[0] as SiteTab) : null;
+}
+
+/**
+ * Enforce the brand's tab list for a request, centrally.
+ *
+ * This deliberately lives in the layout rather than in each route. Gating
+ * per-route means every new route has to remember to opt in, and eight of ten
+ * had not — so a brand that had switched a section off was still serving it to
+ * anyone who typed the URL. A guarantee that each route must remember to honour
+ * is not a guarantee.
+ */
+export function requireTabForRequest(website: Website, request: Request): void {
+  const tab = tabForPath(new URL(request.url).pathname);
+  if (tab) requireTab(website, tab);
+}
