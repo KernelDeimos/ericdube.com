@@ -60,7 +60,7 @@ export default function ItemCard({ title, url, accentColor = 'black', publishedA
               </span>
             )}
             {tags?.map((tag) => (
-              <span key={tag} style={{ ...badgeStyle, backgroundColor: 'rgba(68,136,255,0.15)', color: '#4488ff' }}>
+              <span key={tag} style={{ ...badgeStyle, backgroundColor: 'rgba(68,136,255,0.15)', color: 'var(--site-info)' }}>
                 {tag}
               </span>
             ))}

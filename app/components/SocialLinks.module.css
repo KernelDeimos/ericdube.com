@@ -27,7 +27,7 @@
     padding: 0.4rem 0.9rem;
     border-radius: 999px;
     border: 1px solid #ffffff30;
-    color: #e2e8f0;
+    color: var(--site-foreground);
     text-decoration: none;
     font-size: 0.9rem;
     transition: border-color 0.15s, color 0.15s;

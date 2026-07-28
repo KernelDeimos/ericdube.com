@@ -3,10 +3,10 @@
     color: inherit;
     display: flex;
     flex-direction: column;
-    border: 2px solid #ffffff5d;
+    border: 2px solid var(--site-card-border);
     border-radius: 0.75rem;
     overflow: hidden;
-    background-color: rgba(34, 49, 58, 0.5);
+    background-color: var(--site-surface);
     transition: border-color 0.15s;
 }
 
@@ -51,6 +51,6 @@
 
 .foodType {
     font-size: 0.875rem;
-    color: #94a3b8;
+    color: var(--site-foreground-muted);
     margin: 0 0 0.5rem;
 }

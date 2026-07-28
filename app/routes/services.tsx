@@ -30,7 +30,7 @@ const AVAILABILITY: Record<string, { label: string; color: string }> = {
   available: { label: 'Available for work', color: 'var(--color-teal)' },
   limited: { label: 'Limited availability', color: 'var(--color-mustard)' },
   booked: { label: 'Booked — taking enquiries', color: 'var(--color-sky)' },
-  closed: { label: 'Not taking work right now', color: '#94a3b8' },
+  closed: { label: 'Not taking work right now', color: 'var(--site-foreground-muted)' },
 };
 
 // Copy for anything the brand has not filled in, so the page is never blank and

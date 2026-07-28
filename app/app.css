@@ -8,14 +8,39 @@
   --color-sky: #3babef;
 }
 
-/* Chrome colours a brand's background can flip. Defaults are the dark theme;
-   a light brand overrides them in the per-request style block rather than
-   every component learning about themes. */
+/* Theme tokens a brand's background can flip. Defaults are the dark theme; a
+   light brand overrides them in the per-request style block (see LIGHT_THEME_
+   TOKENS) rather than every component learning about themes.
+
+   Components must use these rather than literal colours. A hardcoded dark
+   panel on a light brand is unreadable, which is exactly how the service cards
+   and contact form ended up illegible on the first light site. */
 :root {
   --site-foreground: #e2e8f0;
   --site-foreground-muted: #94a3b8;
+  --site-foreground-subtle: #64748b;
   --site-wordmark-veil: rgba(0, 0, 0, 0.45);
   --site-nav-veil: rgba(255, 255, 255, 0.08);
+
+  /* Panels and cards */
+  --site-surface: rgba(34, 49, 58, 0.5);
+  --site-surface-strong: rgba(34, 49, 58, 0.7);
+  --site-surface-subtle: rgba(255, 255, 255, 0.06);
+
+  /* Lines */
+  --site-border: rgba(255, 255, 255, 0.2);
+  --site-border-subtle: rgba(255, 255, 255, 0.12);
+  --site-card-border: rgba(255, 255, 255, 0.36);
+
+  /* Form fields, and text that sits on an accent-coloured button */
+  --site-input-bg: rgba(6, 10, 4, 0.6);
+  --site-on-accent: #060a04;
+
+  /* Status. These need light-mode variants too: a pale error red is
+     unreadable on white, which is worse than useless on a validation message. */
+  --site-danger: #f87171;
+  --site-danger-text: #fca5a5;
+  --site-info: #4488ff;
 }
 
 html,

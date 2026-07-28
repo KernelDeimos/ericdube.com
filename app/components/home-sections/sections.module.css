@@ -56,7 +56,7 @@
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   background-color: var(--color-mustard);
-  color: #0f172a;
+  color: var(--site-on-accent);
   font-weight: 600;
   text-decoration: none;
 }

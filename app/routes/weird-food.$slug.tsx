@@ -75,7 +75,7 @@ export default function WeirdFoodDetail() {
               padding: '0.2rem 0.6rem',
               borderRadius: '999px',
               backgroundColor: 'rgba(68,136,255,0.15)',
-              color: '#4488ff',
+              color: 'var(--site-info)',
             }}>
               {tag}
             </span>

@@ -63,6 +63,32 @@ export function isLightBackground(hex: string): boolean {
   return luminance > 0.4;
 }
 
+/**
+ * Every theme token that has to change on a pale background, as one block.
+ *
+ * The counterpart dark values live in app.css. Both sets must stay in step: a
+ * token defined there and forgotten here silently keeps its dark value on a
+ * light brand, which is a contrast bug rather than an obvious break.
+ */
+export const LIGHT_THEME_TOKENS = [
+  '--site-foreground: #0f172a;',
+  '--site-foreground-muted: #475569;',
+  '--site-foreground-subtle: #64748b;',
+  '--site-wordmark-veil: rgba(255, 255, 255, 0.55);',
+  '--site-nav-veil: rgba(15, 23, 42, 0.06);',
+  '--site-surface: rgba(15, 23, 42, 0.04);',
+  '--site-surface-strong: rgba(15, 23, 42, 0.08);',
+  '--site-surface-subtle: rgba(15, 23, 42, 0.05);',
+  '--site-border: rgba(15, 23, 42, 0.18);',
+  '--site-border-subtle: rgba(15, 23, 42, 0.1);',
+  '--site-card-border: rgba(15, 23, 42, 0.15);',
+  '--site-input-bg: #ffffff;',
+  '--site-on-accent: #0f172a;',
+  '--site-danger: #dc2626;',
+  '--site-danger-text: #b91c1c;',
+  '--site-info: #1d4ed8;',
+].join(' ');
+
 /** The built-in title, used before any brand is resolved. */
 export const DEFAULT_SITE_TITLE = 'EricDubé.com';
 

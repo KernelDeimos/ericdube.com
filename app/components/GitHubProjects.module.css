@@ -51,7 +51,7 @@
 
 .cardDesc {
     font-size: 0.85rem;
-    color: #94a3b8;
+    color: var(--site-foreground-muted);
     margin: 0;
     line-height: 1.5;
 }

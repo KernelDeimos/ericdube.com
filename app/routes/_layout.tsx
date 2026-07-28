@@ -12,6 +12,7 @@ import {
   isLightBackground,
   requireTabForRequest,
   publicWebsite,
+  LIGHT_THEME_TOKENS,
 } from '~/lib/website';
 import StaticBanner from '~/components/StaticBanner';
 
@@ -78,10 +79,7 @@ export default function SiteLayout() {
     accentPrimary ? `--color-mustard: ${accentPrimary};` : '',
     accentSecondary ? `--color-teal: ${accentSecondary};` : '',
     background ? `--site-background: ${background};` : '',
-    light ? '--site-foreground: #0f172a;' : '',
-    light ? '--site-foreground-muted: #475569;' : '',
-    light ? '--site-wordmark-veil: rgba(255, 255, 255, 0.55);' : '',
-    light ? '--site-nav-veil: rgba(15, 23, 42, 0.06);' : '',
+    light ? LIGHT_THEME_TOKENS : '',
   ]
     .filter(Boolean)
     .join(' ');
