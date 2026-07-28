@@ -2,6 +2,7 @@ import { useLoaderData } from 'react-router';
 import { client } from '~/sanity/client';
 import Container from '~/components/Container';
 import WeirdFoodCard from '~/components/WeirdFoodCard';
+import { siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
 
 type WeirdFood = {
   name: string;
@@ -26,8 +27,8 @@ export async function loader() {
   return { weirdFoods };
 }
 
-export function meta() {
-  return [{ title: 'Weird-Looking Food — EricDubé.com' }];
+export function meta({ matches }: { matches: readonly SiteMetaMatch[] }) {
+  return [{ title: `Weird-Looking Food — ${siteTitleFrom(matches)}` }];
 }
 
 export default function WeirdFoodList() {

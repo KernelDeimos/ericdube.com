@@ -2,6 +2,7 @@ import { useLoaderData } from 'react-router';
 import { client } from '~/sanity/client';
 import Container from '~/components/Container';
 import MusingCard from '~/components/MusingCard';
+import { siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
 
 type Musing = {
   _id: string;
@@ -22,8 +23,8 @@ export async function loader() {
   return { musings };
 }
 
-export function meta() {
-  return [{ title: 'Musings — EricDubé.com' }];
+export function meta({ matches }: { matches: readonly SiteMetaMatch[] }) {
+  return [{ title: `Musings — ${siteTitleFrom(matches)}` }];
 }
 
 export default function Musings() {

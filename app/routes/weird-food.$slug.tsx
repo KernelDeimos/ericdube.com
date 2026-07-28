@@ -4,6 +4,7 @@ import { client } from '~/sanity/client';
 import { urlFor } from '~/sanity/image';
 import Container from '~/components/Container';
 import styles from './weird-food.$slug.module.css';
+import { siteTitleFrom } from '~/lib/website';
 
 type WeirdFood = {
   name: string;
@@ -33,9 +34,9 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { weirdFood };
 }
 
-export function meta({ data }: Route.MetaArgs) {
+export function meta({ data, matches }: Route.MetaArgs) {
   if (!data) return [{ title: 'Not found' }];
-  return [{ title: `${data.weirdFood.name} — EricDubé.com` }];
+  return [{ title: `${data.weirdFood.name} — ${siteTitleFrom(matches)}` }];
 }
 
 export default function WeirdFoodDetail() {

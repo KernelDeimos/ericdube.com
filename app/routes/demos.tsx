@@ -1,4 +1,5 @@
 import Container from '~/components/Container';
+import { siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
 
 type Demo = {
   title: string;
@@ -60,9 +61,9 @@ const pythonDemos: Demo[] = [
   },
 ];
 
-export function meta() {
+export function meta({ matches }: { matches: readonly SiteMetaMatch[] }) {
   return [
-    { title: 'Demos — EricDubé.com' },
+    { title: `Demos — ${siteTitleFrom(matches)}` },
     {
       name: 'description',
       content: 'Interactive generative demos that run real Python in your browser via Pyodide.',

@@ -6,6 +6,7 @@ import { urlFor } from '~/sanity/image';
 import Container from '~/components/Container';
 import { type AiInfo, designationLabel, scoreColor } from '~/lib/ai';
 import styles from './articles.$slug.module.css';
+import { siteTitleFrom } from '~/lib/website';
 
 type Article = {
   title: string;
@@ -144,10 +145,10 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { article };
 }
 
-export function meta({ data }: Route.MetaArgs) {
+export function meta({ data, matches }: Route.MetaArgs) {
   if (!data) return [{ title: 'Not found' }];
   return [
-    { title: `${data.article.title} — EricDubé.com` },
+    { title: `${data.article.title} — ${siteTitleFrom(matches)}` },
     ...(data.article.excerpt ? [{ name: 'description', content: data.article.excerpt }] : []),
   ];
 }

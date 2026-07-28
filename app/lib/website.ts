@@ -63,6 +63,25 @@ export function isLightBackground(hex: string): boolean {
   return luminance > 0.4;
 }
 
+/** The built-in title, used before any brand is resolved. */
+export const DEFAULT_SITE_TITLE = 'EricDubé.com';
+
+/**
+ * The brand's name for use in a route's page title.
+ *
+ * `meta` runs without loader data of its own, so the brand is read off the
+ * layout match every page shares. Routes rendered outside that layout — the
+ * full-bleed demo and artifact pages — have no brand to read and fall back to
+ * the built-in title.
+ */
+export type SiteMetaMatch = { id?: string; data?: unknown } | undefined;
+
+export function siteTitleFrom(matches: readonly SiteMetaMatch[] | undefined) {
+  const layout = matches?.find((match) => match?.id === 'routes/_layout');
+  const data = layout?.data as { website?: { siteTitle?: string | null } } | undefined;
+  return data?.website?.siteTitle || DEFAULT_SITE_TITLE;
+}
+
 export type Website = {
   _id: string | null;
   name: string;

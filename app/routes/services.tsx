@@ -4,7 +4,7 @@ import Container from '~/components/Container';
 import ServiceCard, { type Service } from '~/components/ServiceCard';
 import ContactForm, { type ContactFormResult } from '~/components/ContactForm';
 import { submitEnquiry, contactMailto } from '~/lib/enquiries';
-import { resolveWebsite, requireTab } from '~/lib/website';
+import { resolveWebsite, requireTab, siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
 import styles from './services.module.css';
 
 type ProcessStep = { title: string; description: string | null };
@@ -161,10 +161,16 @@ export async function action({ request }: { request: Request }) {
   } satisfies ContactFormResult;
 }
 
-export function meta({ data }: { data: Awaited<ReturnType<typeof loader>> | undefined }) {
+export function meta({
+  data,
+  matches,
+}: {
+  data: Awaited<ReturnType<typeof loader>> | undefined;
+  matches: readonly SiteMetaMatch[];
+}) {
   const heading = data?.page?.heading || FALLBACK.heading;
   return [
-    { title: `${heading} — EricDubé.com` },
+    { title: `${heading} — ${siteTitleFrom(matches)}` },
     {
       name: 'description',
       content: data?.page?.seoDescription || data?.page?.intro || FALLBACK.intro,

@@ -3,6 +3,7 @@ import { client } from '~/sanity/client';
 import type { AiInfo } from '~/lib/ai';
 import Container from '~/components/Container';
 import ItemCard from '~/components/ItemCard';
+import { siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
 
 type Article = {
   title: string;
@@ -29,8 +30,8 @@ export async function loader() {
   return { articles };
 }
 
-export function meta() {
-  return [{ title: 'Articles — EricDubé.com' }];
+export function meta({ matches }: { matches: readonly SiteMetaMatch[] }) {
+  return [{ title: `Articles — ${siteTitleFrom(matches)}` }];
 }
 
 export default function Articles() {

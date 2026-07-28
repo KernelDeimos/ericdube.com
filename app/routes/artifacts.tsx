@@ -2,6 +2,7 @@ import { useLoaderData } from 'react-router';
 import Container from '~/components/Container';
 import { type AiInfo, designationLabel } from '~/lib/ai';
 import { listArtifacts } from '~/lib/nexus';
+import { siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
 
 type Artifact = {
   title: string;
@@ -27,9 +28,9 @@ export async function loader() {
   return { artifacts };
 }
 
-export function meta() {
+export function meta({ matches }: { matches: readonly SiteMetaMatch[] }) {
   return [
-    { title: 'Artifacts — EricDubé.com' },
+    { title: `Artifacts — ${siteTitleFrom(matches)}` },
     {
       name: 'description',
       content:

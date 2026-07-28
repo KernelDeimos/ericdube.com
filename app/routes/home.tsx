@@ -5,6 +5,7 @@ import SocialLinks from '../components/SocialLinks';
 import GitHubProjects from '../components/GitHubProjects';
 import MusingsCarousel from '../components/MusingsCarousel';
 import { client } from '~/sanity/client';
+import { siteTitleFrom } from '~/lib/website';
 
 type Project = {
   _id: string;
@@ -44,10 +45,11 @@ export async function loader() {
   return { projects, musings };
 }
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ matches }: Route.MetaArgs) {
+  const site = siteTitleFrom(matches);
   return [
-    { title: 'EricDubé.com' },
-    { name: 'description', content: 'Welcome to EricDubé.com' },
+    { title: site },
+    { name: 'description', content: `Welcome to ${site}` },
   ];
 }
 
