@@ -16,9 +16,12 @@ export type ServiceChoice = { _id: string; title: string; slug: string | null };
 export default function ContactForm({
   services,
   result,
+  privacyNote,
 }: {
   services: ServiceChoice[];
   result: ContactFormResult | undefined;
+  /** Brand-authored reassurance shown under the form; hidden when unset. */
+  privacyNote?: string | null;
 }) {
   const navigation = useNavigation();
   const [searchParams] = useSearchParams();
@@ -192,9 +195,7 @@ export default function ContactForm({
         </span>
       </div>
 
-      <p className={styles.privacy}>
-        Goes straight to me. No newsletter, no CRM sequence, no sharing it with anyone.
-      </p>
+      {privacyNote && <p className={styles.privacy}>{privacyNote}</p>}
     </Form>
   );
 }

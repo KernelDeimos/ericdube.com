@@ -22,6 +22,7 @@ type ServicesPage = {
   faqs: Faq[] | null;
   ctaHeading: string | null;
   ctaBody: string | null;
+  privacyNote: string | null;
   schedulingUrl: string | null;
   seoDescription: string | null;
 } | null;
@@ -68,6 +69,7 @@ export async function loader({ request }: { request: Request }) {
         faqs[] { question, answer },
         ctaHeading,
         ctaBody,
+        privacyNote,
         schedulingUrl,
         seoDescription
       }`,
@@ -308,6 +310,7 @@ export default function Services() {
         <ContactForm
           services={services.map((s) => ({ _id: s._id, title: s.title, slug: s.slug }))}
           result={result}
+          privacyNote={page?.privacyNote ?? null}
         />
       </section>
     </Container>
