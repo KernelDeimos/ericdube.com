@@ -130,6 +130,8 @@ export type Website = {
   bannerHeight: number | null;
   headerBlur: number | null;
   headerVeilStrength: number | null;
+  navBackground: ColorValue;
+  navForeground: string | null;
   homePage: unknown[] | null;
   tags: string[] | null;
   servicesPageId: string | null;
@@ -165,6 +167,8 @@ export type PublicWebsite = Pick<
   | 'bannerHeight'
   | 'headerBlur'
   | 'headerVeilStrength'
+  | 'navBackground'
+  | 'navForeground'
 >;
 
 export function publicWebsite(website: Website): PublicWebsite {
@@ -182,6 +186,8 @@ export function publicWebsite(website: Website): PublicWebsite {
     bannerHeight: website.bannerHeight,
     headerBlur: website.headerBlur,
     headerVeilStrength: website.headerVeilStrength,
+    navBackground: website.navBackground,
+    navForeground: website.navForeground,
   };
 }
 
@@ -211,6 +217,53 @@ export function headerTokens(website: {
   return [
     blur === null ? '' : `--site-header-blur: ${blur}px;`,
     veil === null ? '' : `--site-veil-strength: ${veil};`,
+  ]
+    .filter(Boolean)
+    .join(' ');
+}
+
+/**
+ * The two foreground pairs the navbar can take, matching the site's dark and
+ * light themes so nav text sits in the same palette as the rest of the chrome.
+ */
+const NAV_FOREGROUND = {
+  light: '--site-nav-foreground: #e2e8f0; --site-nav-foreground-muted: #94a3b8;',
+  dark: '--site-nav-foreground: #0f172a; --site-nav-foreground-muted: #475569;',
+} as const;
+
+/**
+ * The navbar's own background and text colour, as CSS declarations, or '' when
+ * a brand has set neither.
+ *
+ * A brand can give the nav a solid background distinct from the header tint — a
+ * darker bar over a busy or pale banner — and choose whether its links read as
+ * light or dark, or are picked automatically for contrast. 'auto' reads the
+ * luminance of whatever the text actually sits on: the nav background when one
+ * is set, otherwise the brand background. A brand that sets neither field keeps
+ * the themed foreground it already had, so this is additive rather than a change
+ * to the existing nav.
+ */
+export function navTokens(website: {
+  navBackground?: ColorValue;
+  navForeground?: string | null;
+  backgroundColor?: ColorValue;
+}): string {
+  const background = colorHex(website.navBackground ?? null);
+  const mode = website.navForeground;
+
+  let foreground: 'light' | 'dark' | null = null;
+  if (mode === 'light' || mode === 'dark') {
+    foreground = mode;
+  } else if (mode === 'auto') {
+    // Contrast against the bar's own colour where it has one; otherwise the
+    // page behind it. With neither known, the dark theme is the site's default.
+    const reference = background ?? colorHex(website.backgroundColor ?? null);
+    foreground = reference && isLightBackground(reference) ? 'dark' : 'light';
+  }
+
+  return [
+    background ? `--site-nav-veil: ${background};` : '',
+    foreground ? NAV_FOREGROUND[foreground] : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -270,6 +323,8 @@ const BUILT_IN_DEFAULT: Website = {
   bannerHeight: null,
   headerBlur: null,
   headerVeilStrength: null,
+  navBackground: null,
+  navForeground: null,
   homePage: null,
   tags: null,
   servicesPageId: null,
@@ -313,6 +368,8 @@ const WEBSITE_PROJECTION = `{
   bannerHeight,
   headerBlur,
   headerVeilStrength,
+  navBackground,
+  navForeground,
   homePage[]{...},
   tags,
   tabs,

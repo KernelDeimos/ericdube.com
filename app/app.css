@@ -32,6 +32,12 @@
   --site-wordmark-veil: rgb(0 0 0 / calc(0.45 * var(--site-veil-strength)));
   --site-nav-veil: rgb(255 255 255 / calc(0.08 * var(--site-veil-strength)));
 
+  /* Nav links follow the theme foreground by default; a brand that gives the
+     nav its own background overrides these so the links contrast with it
+     rather than with the page (see navTokens). */
+  --site-nav-foreground: var(--site-foreground);
+  --site-nav-foreground-muted: var(--site-foreground-muted);
+
   /* Panels and cards */
   --site-surface: rgba(34, 49, 58, 0.5);
   --site-surface-strong: rgba(34, 49, 58, 0.7);

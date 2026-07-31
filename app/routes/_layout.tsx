@@ -14,6 +14,7 @@ import {
   publicWebsite,
   LIGHT_THEME_TOKENS,
   headerTokens,
+  navTokens,
 } from '~/lib/website';
 import StaticBanner from '~/components/StaticBanner';
 
@@ -63,9 +64,11 @@ export async function loader({ request }: { request: Request }) {
 }
 
 const navLinkStyle = ({ isActive }: { isActive: boolean }) => ({
-  // Both sides of this come from the theme: on a pale brand background the old
-  // hardcoded #fff made the active link invisible.
-  color: isActive ? 'var(--site-foreground)' : 'var(--site-foreground-muted)',
+  // Nav-specific foreground tokens: they default to the theme foreground, but a
+  // brand that gives the nav its own background can flip just the nav's text
+  // without touching the rest of the chrome. The old hardcoded #fff made the
+  // active link invisible on a pale background.
+  color: isActive ? 'var(--site-nav-foreground)' : 'var(--site-nav-foreground-muted)',
   textDecoration: 'none',
   fontWeight: isActive ? 600 : 400,
 });
@@ -119,6 +122,9 @@ export default function SiteLayout() {
     // After the light block, which also names the veil tokens: a brand's header
     // settings have to win over the theme's defaults, not the other way round.
     headerTokens(website),
+    // Likewise after the light block, so an explicit nav background and its
+    // resolved foreground override the themed nav tokens.
+    navTokens(website),
   ]
     .filter(Boolean)
     .join(' ');
