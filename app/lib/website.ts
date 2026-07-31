@@ -481,6 +481,17 @@ const WEBSITE_PROJECTION = `{
  * check, so whitelabel resolution and CSRF agree on what the site is called.
  */
 function requestHost(request: Request): string {
+  // Local override: `WEBSITE_DOMAIN=coherentconstructs.com npm run dev` resolves
+  // that brand without spoofing a Host header. Deliberately ignored in
+  // production — a stray env var must never pin every visitor to one brand, the
+  // whole point of whitelabelling being that the host picks the brand, not the
+  // server. Read inside the function and behind a typeof guard so it never runs
+  // (or references `process`) in the browser bundle this module is part of.
+  if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
+    const override = process.env.WEBSITE_DOMAIN?.trim();
+    if (override) return override;
+  }
+
   const forwarded = request.headers.get('x-forwarded-host');
   const first = forwarded?.split(',')[0]?.trim();
   return first || request.headers.get('host') || '';
