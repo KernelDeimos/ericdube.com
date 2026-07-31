@@ -18,6 +18,7 @@ type ServicesPage = {
   showPrices: boolean | null;
   pricingHeading: string | null;
   pricingPhilosophy: string | null;
+  quoteNote: string | null;
   process: ProcessStep[] | null;
   faqs: Faq[] | null;
   ctaHeading: string | null;
@@ -65,6 +66,7 @@ export async function loader({ request }: { request: Request }) {
         showPrices,
         pricingHeading,
         pricingPhilosophy,
+        quoteNote,
         process[] { title, description },
         faqs[] { question, answer },
         ctaHeading,
@@ -219,10 +221,8 @@ export default function Services() {
         <section className={styles.philosophy}>
           <h2 className={styles.philosophyHeading}>{page.pricingHeading || 'How I charge'}</h2>
           <p className={styles.philosophyBody}>{page.pricingPhilosophy}</p>
-          {!showPrices && (
-            <p className={styles.philosophyNote}>
-              Every engagement is quoted individually — get in touch and I will put numbers to it.
-            </p>
+          {!showPrices && page.quoteNote && (
+            <p className={styles.philosophyNote}>{page.quoteNote}</p>
           )}
         </section>
       )}
