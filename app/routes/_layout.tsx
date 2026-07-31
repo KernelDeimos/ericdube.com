@@ -15,6 +15,7 @@ import {
   LIGHT_THEME_TOKENS,
   headerTokens,
   navTokens,
+  appearanceTokens,
 } from '~/lib/website';
 import StaticBanner from '~/components/StaticBanner';
 
@@ -125,6 +126,9 @@ export default function SiteLayout() {
     // Likewise after the light block, so an explicit nav background and its
     // resolved foreground override the themed nav tokens.
     navTokens(website),
+    // The brand's per-area CSS adjustments — corners, padding, borders, card
+    // colours. Last, so nothing above silently overrides a deliberate override.
+    appearanceTokens(website.appearance),
   ]
     .filter(Boolean)
     .join(' ');
@@ -221,14 +225,32 @@ export default function SiteLayout() {
               backdropFilter: WORDMARK_BLUR,
               WebkitBackdropFilter: WORDMARK_BLUR,
               backgroundColor: 'var(--site-wordmark-veil)',
-              padding: '0.5rem 2rem',
+              padding: 'var(--site-wordmark-padding, 0.5rem 2rem)',
+              borderRadius: 'var(--site-wordmark-radius, 0)',
             }}>
               {website.logo ? (
-                <img
-                  src={urlFor(website.logo).height(96).fit('max').url()}
-                  alt={website.logo.alt ?? website.siteTitle}
-                  style={{ maxHeight: '96px', display: 'block' }}
-                />
+                website.showTitleWithLogo ? (
+                  // Both: the logo leads, decorative (alt=""), and the title
+                  // stays the page's one h1 beneath it — so the mark and the
+                  // name read together without duplicating the name to a
+                  // screen reader.
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.4rem' }}>
+                    <img
+                      src={urlFor(website.logo).height(96).fit('max').url()}
+                      alt=""
+                      style={{ maxHeight: '96px', display: 'block' }}
+                    />
+                    <h1 style={{ fontSize: 'clamp(1.1rem, 3vw, 2rem)', margin: 0 }}>
+                      {website.siteTitle}
+                    </h1>
+                  </div>
+                ) : (
+                  <img
+                    src={urlFor(website.logo).height(96).fit('max').url()}
+                    alt={website.logo.alt ?? website.siteTitle}
+                    style={{ maxHeight: '96px', display: 'block' }}
+                  />
+                )
               ) : (
                 <h1 style={{ fontSize: 'clamp(2rem, 6vw, 5rem)', margin: 0 }}>
                   {website.siteTitle}
@@ -240,10 +262,11 @@ export default function SiteLayout() {
               backdropFilter: NAV_BLUR,
               WebkitBackdropFilter: NAV_BLUR,
               backgroundColor: 'var(--site-nav-veil)',
-              padding: '0.5rem 2rem',
+              padding: 'var(--site-nav-padding, 0.5rem 2rem)',
+              borderRadius: 'var(--site-nav-radius, 0)',
               display: 'flex',
               alignItems: 'center',
-              gap: '2rem',
+              gap: 'var(--site-nav-gap, 2rem)',
             }}>
               {tabs.map((tab) => (
                 <NavLink

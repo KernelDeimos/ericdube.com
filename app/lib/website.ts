@@ -110,6 +110,31 @@ export function siteTitleFrom(matches: readonly SiteMetaMatch[] | undefined) {
   return data?.website?.siteTitle || DEFAULT_SITE_TITLE;
 }
 
+/**
+ * Per-brand CSS adjustments, grouped by the part of the site they touch. Every
+ * field is optional; a brand that sets nothing keeps the built-in look. Mirrors
+ * the `appearance` object in the Studio schema, and is turned into CSS custom
+ * properties by appearanceTokens.
+ */
+export type Appearance = {
+  header?: {
+    wordmarkRadius?: number | null;
+    wordmarkCorners?: string[] | null;
+    wordmarkPadding?: number | null;
+    navRadius?: number | null;
+    navCorners?: string[] | null;
+    navPadding?: number | null;
+    navGap?: number | null;
+  } | null;
+  cards?: {
+    radius?: number | null;
+    padding?: number | null;
+    borderWidth?: number | null;
+    borderColor?: ColorValue;
+    background?: ColorValue;
+  } | null;
+} | null;
+
 export type Website = {
   _id: string | null;
   name: string;
@@ -118,6 +143,7 @@ export type Website = {
   siteTitle: string;
   tagline: string | null;
   logo: { asset: object; alt: string | null } | null;
+  showTitleWithLogo: boolean | null;
   favicon: { asset: object } | null;
   socialHeading: string | null;
   socialLinks: { label: string; url: string }[] | null;
@@ -132,6 +158,7 @@ export type Website = {
   headerVeilStrength: number | null;
   navBackground: ColorValue;
   navForeground: string | null;
+  appearance: Appearance;
   homePage: unknown[] | null;
   tags: string[] | null;
   servicesPageId: string | null;
@@ -157,6 +184,8 @@ export type PublicWebsite = Pick<
   | 'siteTitle'
   | 'tagline'
   | 'logo'
+  | 'showTitleWithLogo'
+  | 'appearance'
   | 'favicon'
   | 'accentPrimary'
   | 'accentSecondary'
@@ -176,6 +205,8 @@ export function publicWebsite(website: Website): PublicWebsite {
     siteTitle: website.siteTitle,
     tagline: website.tagline,
     logo: website.logo,
+    showTitleWithLogo: website.showTitleWithLogo,
+    appearance: website.appearance,
     favicon: website.favicon,
     accentPrimary: website.accentPrimary,
     accentSecondary: website.accentSecondary,
@@ -269,6 +300,61 @@ export function navTokens(website: {
     .join(' ');
 }
 
+// CSS border-radius takes its four values in this order.
+const RADIUS_CORNERS = ['topLeft', 'topRight', 'bottomRight', 'bottomLeft'] as const;
+
+/** A clamped pixel length, or null for anything that is not a finite number. */
+function lengthPx(value: unknown, max = 500): string | null {
+  return typeof value === 'number' && Number.isFinite(value)
+    ? `${Math.min(Math.max(value, 0), max)}px`
+    : null;
+}
+
+/**
+ * A border-radius shorthand from a radius and the corners it applies to. An
+ * empty or absent corner list rounds all four; otherwise the listed corners get
+ * the radius and the rest get 0 — the mechanism behind rounding just the
+ * wordmark's bottom-right corner.
+ */
+function borderRadiusValue(radius: unknown, corners: string[] | null | undefined): string | null {
+  const r = lengthPx(radius, 200);
+  if (!r) return null;
+  const set = corners && corners.length ? new Set(corners) : null;
+  return RADIUS_CORNERS.map((corner) => (!set || set.has(corner) ? r : '0')).join(' ');
+}
+
+/**
+ * The brand's Appearance adjustments as CSS custom-property declarations, or ''
+ * for a brand that has set none. Same shape as headerTokens/navTokens: values
+ * come from a CMS field and are interpolated into a `<style>` block, so every
+ * one is clamped or run through colorHex rather than trusted, and an unset field
+ * emits nothing so the component's built-in default stands.
+ */
+export function appearanceTokens(appearance: Appearance): string {
+  const header = appearance?.header;
+  const cards = appearance?.cards;
+
+  // [custom property, resolved value]. A null value drops the declaration, so
+  // an unset field leaves the component's built-in default in place.
+  const declarations: [string, string | null][] = [
+    ['--site-wordmark-radius', borderRadiusValue(header?.wordmarkRadius, header?.wordmarkCorners)],
+    ['--site-wordmark-padding', lengthPx(header?.wordmarkPadding)],
+    ['--site-nav-radius', borderRadiusValue(header?.navRadius, header?.navCorners)],
+    ['--site-nav-padding', lengthPx(header?.navPadding)],
+    ['--site-nav-gap', lengthPx(header?.navGap)],
+    ['--site-card-radius', lengthPx(cards?.radius, 200)],
+    ['--site-card-padding', lengthPx(cards?.padding)],
+    ['--site-card-border-width', lengthPx(cards?.borderWidth, 12)],
+    ['--site-card-border-color', colorHex(cards?.borderColor ?? null)],
+    ['--site-card-bg', colorHex(cards?.background ?? null)],
+  ];
+
+  return declarations
+    .filter(([, value]) => value)
+    .map(([property, value]) => `${property}: ${value};`)
+    .join(' ');
+}
+
 /** Label and path for every tab, so navigation renders from config alone. */
 export const TAB_META: Record<SiteTab, { label: string; path: string }> = {
   home: { label: 'Home', path: '/' },
@@ -311,6 +397,7 @@ const BUILT_IN_DEFAULT: Website = {
   siteTitle: 'EricDubé.com',
   tagline: null,
   logo: null,
+  showTitleWithLogo: null,
   favicon: null,
   socialHeading: null,
   socialLinks: null,
@@ -325,6 +412,7 @@ const BUILT_IN_DEFAULT: Website = {
   headerVeilStrength: null,
   navBackground: null,
   navForeground: null,
+  appearance: null,
   homePage: null,
   tags: null,
   servicesPageId: null,
@@ -356,6 +444,7 @@ const WEBSITE_PROJECTION = `{
   siteTitle,
   tagline,
   logo { asset, alt },
+  showTitleWithLogo,
   favicon { asset },
   socialHeading,
   socialLinks[] { label, url },
@@ -370,6 +459,7 @@ const WEBSITE_PROJECTION = `{
   headerVeilStrength,
   navBackground,
   navForeground,
+  appearance,
   homePage[]{...},
   tags,
   tabs,

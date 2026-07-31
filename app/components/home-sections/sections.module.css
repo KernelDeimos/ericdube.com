@@ -79,9 +79,10 @@
 }
 
 .card {
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  background-color: var(--site-surface-subtle);
+  padding: var(--site-card-padding, 1.5rem);
+  border-radius: var(--site-card-radius, 0.75rem);
+  background-color: var(--site-card-bg, var(--site-surface-subtle));
+  border: var(--site-card-border-width, 0) solid var(--site-card-border-color, transparent);
 }
 
 .icon {
@@ -105,9 +106,10 @@
 /* Gear cards — the feature card, led by the animated cogs instead of an icon. */
 
 .gearCard {
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  background-color: var(--site-surface-subtle);
+  padding: var(--site-card-padding, 1.5rem);
+  border-radius: var(--site-card-radius, 0.75rem);
+  background-color: var(--site-card-bg, var(--site-surface-subtle));
+  border: var(--site-card-border-width, 0) solid var(--site-card-border-color, transparent);
 }
 
 .gearCardArt {
