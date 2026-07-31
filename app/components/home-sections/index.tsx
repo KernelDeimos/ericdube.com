@@ -4,6 +4,7 @@ import { urlFor } from '~/sanity/image';
 import SocialLinks, { type SocialLink } from '../SocialLinks';
 import GitHubProjects from '../GitHubProjects';
 import MusingsCarousel from '../MusingsCarousel';
+import Gears from './Gears';
 import styles from './sections.module.css';
 
 /**
@@ -73,6 +74,13 @@ type FaqSection = {
   faqs?: { _key: string; question: string; answer: string }[] | null;
 };
 
+type GearCardsSection = {
+  _type: 'gearCardsSection';
+  _key: string;
+  heading?: string | null;
+  cards?: { _key: string; title: string; body?: string | null }[] | null;
+};
+
 type RichTextSection = { _type: 'richTextSection'; _key: string; body?: unknown };
 
 type PortfolioSection = {
@@ -91,6 +99,7 @@ export type HomeSection =
   | LogoCloudSection
   | CtaBandSection
   | FaqSection
+  | GearCardsSection
   | RichTextSection
   | PortfolioSection;
 
@@ -274,6 +283,27 @@ function Faq({ section }: { section: FaqSection }) {
   );
 }
 
+function GearCards({ section }: { section: GearCardsSection }) {
+  const cards = section.cards ?? [];
+  if (cards.length === 0) return null;
+  return (
+    <section className={styles.section}>
+      {section.heading && <h2 className={styles.heading}>{section.heading}</h2>}
+      <div className={styles.grid}>
+        {cards.map((card) => (
+          <article key={card._key} className={styles.gearCard}>
+            <div className={styles.gearCardArt}>
+              <Gears />
+            </div>
+            <h3 className={styles.cardTitle}>{card.title}</h3>
+            {card.body && <p className={styles.cardBody}>{card.body}</p>}
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function RichText({ section }: { section: RichTextSection }) {
   if (!section.body) return null;
   return (
@@ -329,6 +359,8 @@ export function HomeSections({
             return <CtaBand key={section._key} section={section} />;
           case 'faqSection':
             return <Faq key={section._key} section={section} />;
+          case 'gearCardsSection':
+            return <GearCards key={section._key} section={section} />;
           case 'richTextSection':
             return <RichText key={section._key} section={section} />;
           case 'portfolioSection':

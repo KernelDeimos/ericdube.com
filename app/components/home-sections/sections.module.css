@@ -102,6 +102,19 @@
   color: var(--site-foreground-muted);
 }
 
+/* Gear cards — the feature card, led by the animated cogs instead of an icon. */
+
+.gearCard {
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--site-surface-subtle);
+}
+
+.gearCardArt {
+  width: 5rem;
+  margin-bottom: 1rem;
+}
+
 /* Stats */
 
 .stats {

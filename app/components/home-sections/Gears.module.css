@@ -1,0 +1,33 @@
+/* The animated cogs. Colour comes from the brand accents via the SVG's
+   currentColor (set per cog in Gears.tsx), so nothing fixed lives here. */
+
+.gears {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Each cog rotates about its own centre. transform-box: fill-box makes
+   transform-origin resolve against the path's bounding box — its centre is the
+   origin the cog is drawn around — so it spins in place rather than orbiting
+   the SVG's corner. */
+.gear {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-name: spin;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* Perpetual motion is exactly what reduced-motion asks to be spared. */
+@media (prefers-reduced-motion: reduce) {
+  .gear {
+    animation: none;
+  }
+}
