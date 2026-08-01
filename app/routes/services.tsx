@@ -13,6 +13,7 @@ type Faq = { question: string; answer: string };
 type ServicesPage = {
   heading: string | null;
   intro: string | null;
+  servicesHeading: string | null;
   availabilityStatus: string | null;
   availabilityNote: string | null;
   showPrices: boolean | null;
@@ -61,6 +62,7 @@ export async function loader({ request }: { request: Request }) {
       `*[_type == "servicesPage" && _id == $pageId][0] {
         heading,
         intro,
+        servicesHeading,
         availabilityStatus,
         availabilityNote,
         showPrices,
@@ -219,7 +221,7 @@ export default function Services() {
 
       {page?.pricingPhilosophy && (
         <section className={styles.philosophy}>
-          <h2 className={styles.philosophyHeading}>{page.pricingHeading || 'How I charge'}</h2>
+          <h2 className={styles.philosophyHeading}>{page.pricingHeading || 'How pricing works'}</h2>
           <p className={styles.philosophyBody}>{page.pricingPhilosophy}</p>
           {!showPrices && page.quoteNote && (
             <p className={styles.philosophyNote}>{page.quoteNote}</p>
@@ -227,15 +229,15 @@ export default function Services() {
         </section>
       )}
 
-      <section aria-labelledby="what-i-do">
-        <h2 id="what-i-do" className={styles.sectionHeading}>
-          What I do
+      <section aria-labelledby="services-heading">
+        <h2 id="services-heading" className={styles.sectionHeading}>
+          {page?.servicesHeading || 'Services'}
         </h2>
         {services.length === 0 ? (
           <p className={styles.empty}>
             Services are being written up. In the meantime,{' '}
             <a className={styles.link} href="#contact">
-              send me a message
+              send a message
             </a>{' '}
             describing what you need.
           </p>
