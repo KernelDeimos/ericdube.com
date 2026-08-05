@@ -89,6 +89,9 @@ export const LIGHT_THEME_TOKENS = [
   '--site-danger: #dc2626;',
   '--site-danger-text: #b91c1c;',
   '--site-info: #1d4ed8;',
+  // Sky is too faint on a pale background; the step number and title take the
+  // dark foreground instead so they stay legible and still match each other.
+  '--site-step-title: #0f172a;',
 ].join(' ');
 
 /** The built-in title, used before any brand is resolved. */

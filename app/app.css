@@ -38,6 +38,11 @@
   --site-nav-foreground: var(--site-foreground);
   --site-nav-foreground-muted: var(--site-foreground-muted);
 
+  /* The process-step number and title share this so they read as one line. Sky
+     over the dark theme; a pale brand flips it to the dark foreground in
+     LIGHT_THEME_TOKENS, because sky-on-white fails contrast. */
+  --site-step-title: var(--color-sky);
+
   /* Panels and cards */
   --site-surface: rgba(34, 49, 58, 0.5);
   --site-surface-strong: rgba(34, 49, 58, 0.7);

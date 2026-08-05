@@ -104,7 +104,7 @@
 .processNumber {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--color-sky);
+    color: var(--site-step-title);
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
 }
@@ -115,9 +115,10 @@
     /* The step title carried the same weight and colour as its blurb, so the
        two ran together. Matching it to the step number (and bolding it) makes
        the number and title read as one line, and muting the blurb below drops
-       it back — so the step's point lands before its explanation. */
+       it back — so the step's point lands before its explanation. The shared
+       token keeps both legible on a pale brand, where sky would wash out. */
     font-weight: 600;
-    color: var(--color-sky);
+    color: var(--site-step-title);
 }
 
 .processBody {
