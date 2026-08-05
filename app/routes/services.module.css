@@ -112,11 +112,17 @@
 .processTitle {
     font-size: 1.1rem;
     margin: 0 0 0.35rem;
+    /* The step title carried the same weight and colour as its blurb, so the
+       two ran together. Matching it to the step number (and bolding it) makes
+       the number and title read as one line, and muting the blurb below drops
+       it back — so the step's point lands before its explanation. */
+    font-weight: 600;
+    color: var(--color-sky);
 }
 
 .processBody {
     margin: 0;
-    color: var(--site-foreground);
+    color: var(--site-foreground-muted);
     line-height: 1.6;
 }
 
