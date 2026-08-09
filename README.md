@@ -23,6 +23,22 @@ npm run dev
 
 The website will be available at `http://localhost:5173`.
 
+### Testing a brand locally
+
+The site is whitelabelled: the request's host selects which `website` document
+in Sanity drives branding, navigation and content. Locally every request would
+otherwise resolve to the default brand, so there is a dev-only override:
+
+```bash
+WEBSITE_DOMAIN=coherentconstructs.com npm run dev
+```
+
+`WEBSITE_DOMAIN` is matched against each website's `domains` list exactly as a
+real `Host` header would be, so you can preview any brand without editing
+`/etc/hosts` or spoofing headers. It is **read only when `NODE_ENV` is not
+`production`** and ignored otherwise — a stray value must never pin every
+visitor to one brand in a deployment. Leave it unset to serve the default brand.
+
 ## Artifacts (claude-nexus)
 
 The `/artifacts` pages are served from a local **claude-nexus** node running on
