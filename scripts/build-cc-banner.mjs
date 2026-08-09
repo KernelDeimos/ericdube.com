@@ -116,9 +116,12 @@ const factory = html.slice(wrapperOpen, wrapperClose + '</div>'.length);
 // 3. The physics layer, which is ours rather than the source page's, so it is
 //    referenced rather than copied — otherwise a re-run would silently drop it.
 //    matter.min.js is copied out of node_modules so the served version tracks
-//    package.json instead of being a vendored blob nobody updates. Both are
-//    plain same-origin scripts, which the banner's sandbox (allow-scripts, no
-//    allow-same-origin) permits.
+//    package.json instead of being a vendored blob nobody updates. It is not
+//    loaded by a <script> tag here: cc-physics.js pulls it in itself, and only
+//    after its startup gates pass, so a phone or a reduced-motion visitor never
+//    downloads ~80KB of engine to leave it idle. Both are plain same-origin
+//    scripts, which the banner's sandbox (allow-scripts, no allow-same-origin)
+//    permits.
 copyFileSync(
   resolve(repoRoot, 'node_modules/matter-js/build/matter.min.js'),
   resolve(repoRoot, 'public/banners/matter.min.js')
@@ -147,7 +150,6 @@ ${factory
   .map((line) => (line.trim() ? `    ${line}` : line))
   .join('\n')}
     </div>
-<script src="matter.min.js"></script>
 <script src="cc-physics.js"></script>
 </body>
 </html>

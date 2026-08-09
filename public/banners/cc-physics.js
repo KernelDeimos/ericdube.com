@@ -147,11 +147,17 @@
   var MAX_FLIGHT_MS = 6 * 1600;
 
   // ---------------------------------------------------------------------------
-  // Startup checks
+  // Startup gates
+  //
+  // These decide whether the simulation runs at all, and they run before
+  // matter.min.js is loaded — the engine is ~80KB, and on a phone or with
+  // reduced motion it would be fetched only to sit idle. The banner's HTML no
+  // longer loads matter.min.js eagerly; instead, once the gates pass, this
+  // script loads the engine and re-runs itself with Matter present.
   // ---------------------------------------------------------------------------
 
   var svg = document.querySelector('svg.factory');
-  if (!svg || !window.Matter) return;
+  if (!svg) return;
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     // The reduced-motion rule in the stylesheet collapses the CSS animations.
     // A physics simulation cannot be collapsed, so it simply does not run.
@@ -164,6 +170,28 @@
     // running, the phone would get the JS pendulums and sliding chute the mobile
     // simplification was meant to remove. So, like reduced-motion above, it bows
     // out and leaves the simplified CSS scene.
+    return;
+  }
+
+  // The gates passed, so the simulation will run. If the engine is not loaded
+  // yet, fetch it and re-run this script once it is ready; the second pass finds
+  // window.Matter and falls straight through to the simulation below. Nothing
+  // above here has touched the DOM, so running twice is harmless. Both files are
+  // plain same-origin scripts, which the banner's sandbox (allow-scripts, no
+  // allow-same-origin) permits.
+  if (!window.Matter) {
+    var engineScript = document.createElement('script');
+    engineScript.src = 'matter.min.js';
+    engineScript.onload = function () {
+      var rerun = document.createElement('script');
+      rerun.src = 'cc-physics.js';
+      document.head.appendChild(rerun);
+    };
+    engineScript.onerror = function () {
+      // The banner keeps working on CSS alone; it just keeps faking these parts.
+      if (window.console) console.warn('cc-physics: matter.min.js did not load; leaving CSS animations');
+    };
+    document.head.appendChild(engineScript);
     return;
   }
 
