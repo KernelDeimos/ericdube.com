@@ -69,11 +69,23 @@
     margin: 0 0 1.25rem;
 }
 
+/* Cards wrap and centre rather than sitting in fixed grid tracks, so a count
+   that is not a multiple of the columns-per-row (four services under a
+   three-wide layout) centres its final row instead of stranding a lone card on
+   the left with dead space beside it. */
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1.5rem;
     margin-bottom: 3rem;
+}
+
+/* Grow to fill a full row, but cap the width so a single trailing card centres
+   at a card's size instead of stretching across the whole row. */
+.grid > * {
+    flex: 1 1 20rem;
+    max-width: 24rem;
 }
 
 .empty {
