@@ -6,6 +6,7 @@ import { client } from '~/sanity/client';
 
 export type SiteTab =
   | 'home'
+  | 'about'
   | 'services'
   | 'articles'
   | 'demos'
@@ -164,6 +165,7 @@ export type Website = {
   appearance: Appearance;
   homePage: unknown[] | null;
   tags: string[] | null;
+  aboutPageId: string | null;
   servicesPageId: string | null;
   tabs: SiteTab[] | null;
   serviceIds: string[] | null;
@@ -361,6 +363,7 @@ export function appearanceTokens(appearance: Appearance): string {
 /** Label and path for every tab, so navigation renders from config alone. */
 export const TAB_META: Record<SiteTab, { label: string; path: string }> = {
   home: { label: 'Home', path: '/' },
+  about: { label: 'About', path: '/about' },
   services: { label: 'Services', path: '/services' },
   articles: { label: 'Articles', path: '/articles' },
   demos: { label: 'Demos', path: '/demos' },
@@ -418,6 +421,7 @@ const BUILT_IN_DEFAULT: Website = {
   appearance: null,
   homePage: null,
   tags: null,
+  aboutPageId: null,
   servicesPageId: null,
   tabs: null, // null means "every tab", matching pre-whitelabel behaviour
   serviceIds: null,
@@ -467,6 +471,7 @@ const WEBSITE_PROJECTION = `{
   tags,
   tabs,
   "serviceIds": services[]->_id,
+  "aboutPageId": aboutPage->_id,
   "servicesPageId": servicesPage->_id,
   contactEmail,
   schedulingUrl,
