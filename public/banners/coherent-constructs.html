@@ -410,12 +410,21 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
-/* On a phone the banner is a small, cropped strip, so the full factory's ambient
-   motion reads as noise. Keep the structure and the turning gears and belts, but
-   skip the long camera build-in and drop the fiddly particle motion — steam,
-   sparks, grain, travelling parts, blinking lights, scanners — for a calmer,
-   simpler scene than the desktop animation. Desktop (>700px) is untouched. */
-@media only screen and (max-width: 700px) {
+/* On a phone or tablet the banner is a small, cropped strip, so the full
+   factory's ambient motion reads as noise. Keep the structure and the turning
+   gears and belts, but skip the long camera build-in and drop the fiddly
+   particle motion — steam, sparks, grain, travelling parts, blinking lights,
+   scanners — for a calmer, simpler scene than the desktop animation.
+
+   Gated on the primary pointer, not width: (hover: none) and (pointer: coarse)
+   is a device whose main input is a finger — a phone or tablet, in any
+   orientation — which is what "handheld" actually means; width missed a phone in
+   landscape and caught a merely-narrow desktop window. It deliberately avoids the
+   any-pointer/any-hover forms, so a touchscreen laptop (a Surface and the like),
+   whose primary pointer is still a hovering trackpad, keeps the full desktop
+   scene. Only a 2-in-1 with its keyboard detached — a tablet at that point —
+   flips to the simplified one, which is the right call. */
+@media (hover: none) and (pointer: coarse) {
   .factory .camera { animation-duration: 0.001s; }
   .factory .puff, .factory .grain, .factory .drop, .factory .spark,
   .factory .itA, .factory .itB, .factory .itC, .factory .bucket,

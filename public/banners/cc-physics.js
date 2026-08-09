@@ -163,13 +163,15 @@
     // A physics simulation cannot be collapsed, so it simply does not run.
     return;
   }
-  if (window.matchMedia && window.matchMedia('(max-width: 700px)').matches) {
-    // Under 700px the banner is a small cropped strip and the stylesheet drops
-    // the factory's ambient motion for a calmer scene (the max-width:700px block
-    // in BANNER_CSS). That rule is CSS, so it cannot reach this simulation — left
-    // running, the phone would get the JS pendulums and sliding chute the mobile
-    // simplification was meant to remove. So, like reduced-motion above, it bows
-    // out and leaves the simplified CSS scene.
+  if (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+    // On a touch-primary device (a phone or tablet) the banner is a small cropped
+    // strip and the stylesheet drops the factory's ambient motion for a calmer
+    // scene (the `(hover: none) and (pointer: coarse)` block in BANNER_CSS). That
+    // rule is CSS, so it cannot reach this simulation — left running, the handheld
+    // would get the JS pendulums and sliding chute the simplification was meant to
+    // remove. So, like reduced-motion above, it bows out and leaves the simplified
+    // CSS scene. Matching the primary pointer (not width, not any-pointer) is what
+    // keeps a touchscreen laptop like a Surface on the full desktop scene.
     return;
   }
 
