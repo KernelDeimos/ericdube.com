@@ -203,6 +203,13 @@ export default function Services() {
     : undefined;
   const schedulingUrl = scheduling;
 
+  // A service count of the form 3n+1 (four, seven, …) leaves a lone card in the
+  // final row once the layout is three wide, which the centred wrap cannot
+  // improve — a single trailing card has nothing to centre against. That case
+  // gets a grid that re-balances the last four cards into two rows of two; see
+  // .orphanThrees in services.module.css.
+  const orphanInThrees = services.length % 3 === 1 && services.length >= 4;
+
   return (
     <Container style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
       <header className={styles.header}>
@@ -242,7 +249,7 @@ export default function Services() {
             describing what you need.
           </p>
         ) : (
-          <div className={styles.grid}>
+          <div className={`${styles.grid} ${orphanInThrees ? styles.orphanThrees : ''}`}>
             {services.map((service) => (
               <ServiceCard
                 key={service._id}

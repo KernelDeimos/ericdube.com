@@ -70,9 +70,10 @@
 }
 
 /* Cards wrap and centre rather than sitting in fixed grid tracks, so a count
-   that is not a multiple of the columns-per-row (four services under a
-   three-wide layout) centres its final row instead of stranding a lone card on
-   the left with dead space beside it. */
+   that is not a multiple of the columns-per-row (five services under a
+   three-wide layout) centres its final row instead of stranding it on the left
+   with dead space beside it. The one count this cannot help is 3n+1, where the
+   final row is a single card — see .orphanThrees below. */
 .grid {
     display: flex;
     flex-wrap: wrap;
@@ -86,6 +87,40 @@
 .grid > * {
     flex: 1 1 20rem;
     max-width: 24rem;
+}
+
+/*
+ * A service count of the form 3n+1 (four, seven, …) leaves a lone card in the
+ * final row once the layout is three wide — the case the centred wrap above
+ * cannot improve, because a single trailing card has nothing to centre against.
+ * Only that count (the route adds .orphanThrees) and only at the three-wide
+ * width switches to a six-column grid, so the last four cards can be re-placed
+ * as two centred rows of two: a row of three plus its orphan becomes a balanced
+ * 2 + 2. Every other count, and every narrower width, keeps the flex layout.
+ *
+ * The width below is the point at which three 20rem cards first fit on one line,
+ * so the grid takes over exactly when the three-wide row it rebalances appears.
+ */
+@media (min-width: 67rem) {
+    .orphanThrees {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+    }
+    .orphanThrees > * {
+        grid-column: span 2; /* two of six columns → three cards per row */
+        max-width: none;
+    }
+    /* The last four cards: columns 2–3 then 4–5 of six, so each pair sits centred
+       with an empty column either side. Auto-flow drops the second pair to the
+       next row, giving two rows of two. */
+    .orphanThrees > *:nth-last-child(4),
+    .orphanThrees > *:nth-last-child(2) {
+        grid-column: 2 / span 2;
+    }
+    .orphanThrees > *:nth-last-child(3),
+    .orphanThrees > *:nth-last-child(1) {
+        grid-column: 4 / span 2;
+    }
 }
 
 .empty {
