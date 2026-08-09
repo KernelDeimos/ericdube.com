@@ -70,3 +70,18 @@ body {
   color: var(--site-foreground);
   color-scheme: dark;
 }
+
+/* The header reserves a brand-set banner height (see bannerHeight) so a static
+   banner has room for its artwork. That height is tuned for the wide desktop
+   banner; on a phone the same value strands the nav far below a short, wide
+   banner and opens a large empty band under the header. Cap it on narrow
+   viewports so the nav rides just under the banner instead. A brand with no
+   banner height leaves the property unset, so this is min-height: 0 — no change. */
+.brand-header {
+  min-height: var(--site-banner-height, 0px);
+}
+@media (max-width: 40rem) {
+  .brand-header {
+    min-height: min(var(--site-banner-height, 0px), 15rem);
+  }
+}

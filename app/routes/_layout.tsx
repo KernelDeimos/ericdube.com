@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Outlet, NavLink, useLocation, useLoaderData } from 'react-router';
 import RandomCanvasAnimation from '~/components/RandomCanvasAnimation';
 import { LUA_ANIMATIONS, LUA_ANIMATIONS_BY_NAME } from '~/components/lua-animations';
@@ -157,6 +157,7 @@ export default function SiteLayout() {
         />
       )}
       <div
+        className="brand-header"
         style={{
           position: 'relative',
           // Always a column so the nav can be pinned to the bottom of the
@@ -166,9 +167,12 @@ export default function SiteLayout() {
           display: 'flex',
           flexDirection: 'column',
           // The banner is otherwise only as tall as the wordmark and nav, which
-          // crops most static banners to a sliver of their artwork.
+          // crops most static banners to a sliver of their artwork. The height
+          // is carried as a custom property rather than min-height directly so
+          // .brand-header can cap it on phones (see app.css) — the desktop value
+          // strands the nav below a short mobile banner.
           ...(showBanner && website.bannerHeight
-            ? { minHeight: `${website.bannerHeight}px` }
+            ? ({ '--site-banner-height': `${website.bannerHeight}px` } as CSSProperties)
             : null),
         }}
       >
