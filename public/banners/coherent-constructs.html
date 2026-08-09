@@ -410,6 +410,22 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
+/* On a phone the banner is a small, cropped strip, so the full factory's ambient
+   motion reads as noise. Keep the structure and the turning gears and belts, but
+   skip the long camera build-in and drop the fiddly particle motion — steam,
+   sparks, grain, travelling parts, blinking lights, scanners — for a calmer,
+   simpler scene than the desktop animation. Desktop (>700px) is untouched. */
+@media only screen and (max-width: 700px) {
+  .factory .camera { animation-duration: 0.001s; }
+  .factory .puff, .factory .grain, .factory .drop, .factory .spark,
+  .factory .itA, .factory .itB, .factory .itC, .factory .bucket,
+  .factory .hook, .factory .slide, .factory .agv, .factory .rk,
+  .factory .scan, .factory .beam, .factory .blink, .factory .bar,
+  .factory .wave, .factory .ram, .factory .arm1, .factory .arm2, .factory .grip,
+  .factory .head2, .factory .head3, .factory .flapL, .factory .flapR,
+  .factory .shutter, .factory .chain, .factory .level, .factory .needle,
+  .factory .needle-s, .factory .sway { animation: none; }
+}
 </style>
 </head>
 <body>
