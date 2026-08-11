@@ -37,9 +37,13 @@
     font-size: 1.05rem;
 }
 
+/* The page's accent lives in one knob, --services-accent (default teal), so
+   every brand-colour touch on this page — the philosophy panel, the section
+   heading rules — recolours together. A brand can override it on an ancestor
+   without editing these rules. */
 .philosophy {
-    border: 1px solid rgba(66, 233, 172, 0.35);
-    background: rgba(66, 233, 172, 0.06);
+    border: 1px solid color-mix(in srgb, var(--services-accent, var(--color-teal)) 35%, transparent);
+    background: color-mix(in srgb, var(--services-accent, var(--color-teal)) 6%, transparent);
     border-radius: 0.5rem;
     padding: 1.25rem 1.5rem;
     margin-bottom: 3rem;
@@ -48,7 +52,7 @@
 .philosophyHeading {
     font-size: 1.1rem;
     margin: 0 0 0.5rem;
-    color: var(--color-teal);
+    color: var(--services-accent, var(--color-teal));
 }
 
 .philosophyBody {
@@ -72,7 +76,8 @@
 }
 
 /* A short accent rule under each section heading gives the page a spine of brand
-   colour instead of plain black-on-panel headings. */
+   colour instead of plain black-on-panel headings. Driven by --services-accent
+   so it tracks the page accent. */
 .sectionHeading::after {
     content: "";
     position: absolute;
@@ -81,7 +86,7 @@
     width: 2.5rem;
     height: 3px;
     border-radius: 999px;
-    background: var(--color-teal);
+    background: var(--services-accent, var(--color-teal));
 }
 
 /* Cards wrap and centre rather than sitting in fixed grid tracks, so a count
@@ -143,6 +148,13 @@
     color: var(--color-mustard);
 }
 
+.link:focus-visible,
+.ctaSchedulingLink:focus-visible {
+    outline: 2px solid var(--color-mustard);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
 .process {
     list-style: none;
     margin: 0 0 3rem;
@@ -194,20 +206,61 @@
 }
 
 .faq {
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--site-card-border);
     border-radius: 0.5rem;
-    padding: 0.9rem 1.1rem;
     background-color: var(--site-surface);
 }
 
+/* The whole question row is the toggle: it carries the padding (so the hit
+   target spans the row, not just the text), a hover fill, a focus ring, and a
+   chevron that rotates open — so it reads as expandable rather than a plain box.
+   The default disclosure triangle is suppressed in its place. */
 .faqQuestion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
     cursor: pointer;
     font-weight: 600;
     color: var(--site-foreground);
+    padding: 0.85rem 1.1rem;
+    min-height: 2.75rem;
+    border-radius: 0.5rem;
+    list-style: none;
+    transition: background-color 0.15s;
+}
+
+.faqQuestion::-webkit-details-marker {
+    display: none;
+}
+
+.faqQuestion:hover {
+    background-color: var(--site-surface-subtle);
+}
+
+.faqQuestion:focus-visible {
+    outline: 2px solid var(--services-accent, var(--color-teal));
+    outline-offset: -2px;
+}
+
+.faqQuestion::after {
+    content: "";
+    flex-shrink: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--site-foreground-muted);
+    border-bottom: 2px solid var(--site-foreground-muted);
+    transform: rotate(45deg);
+    transition: transform 0.2s;
+}
+
+.faq[open] .faqQuestion::after {
+    transform: rotate(225deg);
 }
 
 .faqAnswer {
-    margin: 0.75rem 0 0;
+    margin: 0;
+    padding: 0 1.1rem 0.9rem;
     color: var(--site-foreground);
     line-height: 1.6;
     white-space: pre-line;
@@ -242,4 +295,18 @@
 .ctaSchedulingLink {
     color: var(--color-mustard);
     font-weight: 600;
+}
+
+/* Phone pass: pull in the generous desktop padding and gaps so the page uses
+   the narrow viewport well without feeling cramped. */
+@media (max-width: 40rem) {
+    .header {
+        margin-bottom: 2.25rem;
+    }
+    .grid {
+        gap: 1.15rem;
+    }
+    .cta {
+        padding: 1.5rem 1.25rem;
+    }
 }

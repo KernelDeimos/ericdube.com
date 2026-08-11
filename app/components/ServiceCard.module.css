@@ -205,9 +205,14 @@
     line-height: 1.5;
 }
 
+/* The per-service CTA is a secondary, outline action — the page's filled
+   primary is the contact form's submit. inline-flex + min-height keeps it a
+   comfortable 44px touch target even at the small font size. */
 .cta {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     align-self: flex-start;
+    min-height: 2.75rem;
     margin-top: 0.25rem;
     padding: 0.5rem 1.1rem;
     border: 2px solid var(--accent, var(--color-teal));
@@ -221,4 +226,17 @@
 
 .cta:hover {
     background-color: color-mix(in srgb, var(--accent, var(--color-teal)) 15%, transparent);
+}
+
+.cta:focus-visible {
+    outline: 2px solid var(--accent, var(--color-teal));
+    outline-offset: 2px;
+}
+
+/* On phones the card is full-width, so trim the generous desktop padding to
+   claw back horizontal room for the content. */
+@media (max-width: 40rem) {
+    .card {
+        padding: 1.35rem 1.2rem 1.25rem;
+    }
 }
