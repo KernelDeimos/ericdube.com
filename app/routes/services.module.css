@@ -67,6 +67,21 @@
 .sectionHeading {
     font-size: 1.5rem;
     margin: 0 0 1.25rem;
+    padding-bottom: 0.5rem;
+    position: relative;
+}
+
+/* A short accent rule under each section heading gives the page a spine of brand
+   colour instead of plain black-on-panel headings. */
+.sectionHeading::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 2.5rem;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--color-teal);
 }
 
 /* Cards wrap and centre rather than sitting in fixed grid tracks, so a count
@@ -95,8 +110,8 @@
  * cannot improve, because a single trailing card has nothing to centre against.
  * Only that count (the route adds .orphanThrees) and only at the three-wide
  * width switches to a six-column grid, so the last four cards can be re-placed
- * as two centred rows of two: a row of three plus its orphan becomes a balanced
- * 2 + 2. Every other count, and every narrower width, keeps the flex layout.
+ * as two rows of two: a row of three plus its orphan becomes a balanced 2 + 2.
+ * Every other count, and every narrower width, keeps the flex layout.
  *
  * The width below is the point at which three 20rem cards first fit on one line,
  * so the grid takes over exactly when the three-wide row it rebalances appears.
@@ -110,16 +125,12 @@
         grid-column: span 2; /* two of six columns → three cards per row */
         max-width: none;
     }
-    /* The last four cards: columns 2–3 then 4–5 of six, so each pair sits centred
-       with an empty column either side. Auto-flow drops the second pair to the
-       next row, giving two rows of two. */
-    .orphanThrees > *:nth-last-child(4),
-    .orphanThrees > *:nth-last-child(2) {
-        grid-column: 2 / span 2;
-    }
-    .orphanThrees > *:nth-last-child(3),
-    .orphanThrees > *:nth-last-child(1) {
-        grid-column: 4 / span 2;
+    /* The last four cards each take half the grid (three of six columns), so the
+       two rows of two stretch the full container width. Splitting them into
+       narrower centred pairs left dead columns on either side that read as a
+       layout bug rather than an intentional balance. */
+    .orphanThrees > *:nth-last-child(-n + 4) {
+        grid-column: span 3;
     }
 }
 

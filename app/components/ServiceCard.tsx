@@ -67,7 +67,10 @@ export default function ServiceCard({
       style={{ '--accent': accent } as CSSProperties}
     >
       <header>
-        <h2 className={styles.title}>{service.title}</h2>
+        <div className={styles.titleRow}>
+          <h2 className={styles.title}>{service.title}</h2>
+          {service.featured && <span className={styles.featuredTag}>Featured</span>}
+        </div>
         {service.tagline && <p className={styles.tagline}>{service.tagline}</p>}
       </header>
 
