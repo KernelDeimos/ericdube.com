@@ -1,65 +1,44 @@
+/* BOLD DIRECTION (uncommitted, for review): drop the symmetric rounded panel
+   for an editorial "filed card" — a flat surface squared on the left with a
+   thick accent spine, so a row reads as a set of tabbed index cards rather than
+   identical bootstrap boxes. The accent lives in the spine (and the kicker,
+   markers, price rule) instead of a whole-card wash. */
 .card {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.15rem;
     border: 1px solid var(--site-card-border);
-    border-radius: 0.85rem;
-    padding: 1.65rem 1.5rem 1.5rem;
-    /* A whisper of the service's own accent lifts off the flat surface, so a row
-       of cards reads as distinct colours rather than identical grey panels. */
-    background:
-        linear-gradient(
-            180deg,
-            color-mix(in srgb, var(--accent, var(--color-teal)) 7%, transparent),
-            transparent 40%
-        ),
-        var(--site-surface);
+    border-left: 3px solid var(--accent, var(--color-teal));
+    border-radius: 0 0.6rem 0.6rem 0;
+    padding: 1.9rem 1.6rem 1.6rem;
+    background-color: var(--site-surface);
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: background-color 0.2s;
     height: 100%;
 }
 
-/* The accent strip along the top edge is the per-service colour tag. It clips to
-   the card's rounded corners via overflow:hidden, sits at half strength at rest,
-   and comes up to full on hover. */
-.card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--accent, var(--color-teal));
-    opacity: 0.55;
-    transition: opacity 0.2s;
-}
-
-/* On hover the card highlights in place — accent border and full-strength top
-   strip — rather than lifting. A translate/shadow lift made these read as
-   pressable, but only the CTA button inside is clickable. */
+/* Hover tints the surface faintly toward the accent — a quiet highlight, no
+   lift (only the CTA is clickable). */
 .card:hover {
-    border-color: var(--accent, var(--color-teal));
+    background-color: color-mix(in srgb, var(--accent, var(--color-teal)) 5%, var(--site-surface));
 }
 
-.card:hover::before {
-    opacity: 1;
-}
-
-/* The featured card sets itself apart with the accent border, the full-strength
-   top strip, and the "Featured" pill — no heavier background wash. A stronger
-   tint here only cost a little contrast against the card's text, and the pill
-   already says it plainly, so the card keeps the same faint wash as the rest. */
+/* Featured thickens the spine and warms the surface, so it stands out
+   structurally — the "Featured" kicker/pill still says it in words. */
 .featured {
-    border-color: color-mix(in srgb, var(--accent, var(--color-teal)) 45%, transparent);
+    border-left-width: 6px;
+    background-color: color-mix(in srgb, var(--accent, var(--color-teal)) 7%, var(--site-surface));
 }
 
-.featured::before {
-    opacity: 1;
+/* column-reverse turns the tagline into a small accent kicker ABOVE an
+   oversized title — an editorial masthead instead of a coloured heading. */
+.card > header {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.55rem;
 }
 
-/* Title and its Featured pill share a baseline row so the pill rides beside the
-   heading rather than pushing the tagline around. */
 .titleRow {
     display: flex;
     align-items: baseline;
@@ -68,9 +47,11 @@
 }
 
 .title {
-    font-size: 1.4rem;
+    font-size: 1.7rem;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
     margin: 0;
-    color: var(--accent, var(--color-teal));
+    color: var(--site-foreground);
 }
 
 .featuredTag {
@@ -81,7 +62,7 @@
     text-transform: uppercase;
     letter-spacing: 0.07em;
     padding: 0.22rem 0.55rem;
-    border-radius: 999px;
+    border-radius: 3px;
     color: var(--accent, var(--color-teal));
     background: color-mix(in srgb, var(--accent, var(--color-teal)) 16%, transparent);
     border: 1px solid color-mix(in srgb, var(--accent, var(--color-teal)) 40%, transparent);
@@ -89,9 +70,12 @@
 }
 
 .tagline {
-    margin: 0.35rem 0 0;
-    color: var(--site-foreground-muted);
-    font-size: 0.95rem;
+    margin: 0;
+    color: var(--accent, var(--color-teal));
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
 }
 
 .description {
@@ -113,15 +97,21 @@
 
 .deliverables li {
     display: flex;
-    gap: 0.6rem;
-    align-items: baseline;
+    gap: 0.65rem;
+    align-items: flex-start;
     line-height: 1.5;
 }
 
+/* A small accent diamond replaces the arrow bullet — a quieter, more graphic
+   marker that echoes the spine. */
 .deliverables li::before {
-    content: "→";
-    color: var(--accent, var(--color-teal));
+    content: "";
     flex-shrink: 0;
+    width: 0.4rem;
+    height: 0.4rem;
+    margin-top: 0.42rem;
+    background: var(--accent, var(--color-teal));
+    transform: rotate(45deg);
 }
 
 .badges {
@@ -174,9 +164,11 @@
 }
 
 .priceValue {
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     color: var(--site-foreground);
+    font-variant-numeric: tabular-nums;
 }
 
 .priceQuote {
@@ -207,25 +199,37 @@
 
 /* The per-service CTA is a secondary, outline action — the page's filled
    primary is the contact form's submit. inline-flex + min-height keeps it a
-   comfortable 44px touch target even at the small font size. */
+   comfortable 44px touch target even at the small font size. A trailing arrow
+   slides on hover for a bit of momentum. */
 .cta {
     display: inline-flex;
     align-items: center;
+    gap: 0.5rem;
     align-self: flex-start;
     min-height: 2.75rem;
-    margin-top: 0.25rem;
-    padding: 0.5rem 1.1rem;
+    margin-top: 0.35rem;
+    padding: 0.6rem 1.25rem;
     border: 2px solid var(--accent, var(--color-teal));
-    border-radius: 0.5rem;
+    border-radius: 0.4rem;
     color: var(--accent, var(--color-teal));
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
     transition: background-color 0.15s;
 }
 
+.cta::after {
+    content: "→";
+    transition: transform 0.15s;
+}
+
 .cta:hover {
-    background-color: color-mix(in srgb, var(--accent, var(--color-teal)) 15%, transparent);
+    background-color: color-mix(in srgb, var(--accent, var(--color-teal)) 14%, transparent);
+}
+
+.cta:hover::after {
+    transform: translateX(3px);
 }
 
 .cta:focus-visible {
