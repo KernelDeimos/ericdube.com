@@ -1,5 +1,14 @@
+import { useEffect, useState } from 'react';
 import { Form, useNavigation, useSearchParams } from 'react-router';
 import styles from './ContactForm.module.css';
+
+declare global {
+  interface Window {
+    // Defined only on brands that render the Google tag (see root.tsx); absent
+    // elsewhere, which is why every call site uses optional chaining.
+    gtag?: (...args: unknown[]) => void;
+  }
+}
 
 export type ContactFormResult =
   | { ok: true }
@@ -32,6 +41,27 @@ export default function ContactForm({
   const preselected = searchParams.get('service');
   const preselectedId =
     services.find((s) => s.slug === preselected || s._id === preselected)?._id ?? '';
+
+  // Track the picked service so a successful submission can report which
+  // offering the lead came in for. The <select> submits the service _id; we
+  // report its slug (e.g. "codebase-rescue"), which reads better in analytics.
+  const [serviceId, setServiceId] = useState(preselectedId);
+  const chosenSlug = services.find((s) => s._id === serviceId)?.slug ?? undefined;
+
+  // On a successful enquiry, fire GA4's recommended lead event. gtag exists
+  // only on brands that render the Google tag, so this no-ops everywhere else.
+  // Runs once, when the success result arrives — not on load or on a rejected
+  // submission.
+  useEffect(() => {
+    if (result?.ok) {
+      window.gtag?.('event', 'generate_lead', {
+        form_name: 'enquiry',
+        service: chosenSlug,
+      });
+    }
+    // Only the success transition should trigger it; chosenSlug is fixed by then.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result?.ok]);
 
   if (result?.ok) {
     return (
@@ -124,7 +154,8 @@ export default function ContactForm({
             className={styles.select}
             id="service"
             name="service"
-            defaultValue={preselectedId}
+            value={serviceId}
+            onChange={(e) => setServiceId(e.target.value)}
           >
             <option value="">Not sure yet / something else</option>
             {services.map((service) => (
