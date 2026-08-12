@@ -172,6 +172,13 @@ export type Website = {
   contactEmail: string | null;
   schedulingUrl: string | null;
   seoDescription: string | null;
+  /**
+   * The brand's Google tag (gtag.js) measurement ID, e.g. "G-XXXXXXXXXX". When
+   * set, this brand — and only this brand — renders the Google tag on every
+   * page. Left empty, the brand runs no analytics, so the tag is opt-in per
+   * brand rather than a hardcoded check for one of them.
+   */
+  googleTagId: string | null;
 };
 
 /**
@@ -428,6 +435,7 @@ const BUILT_IN_DEFAULT: Website = {
   contactEmail: null,
   schedulingUrl: null,
   seoDescription: null,
+  googleTagId: null,
 };
 
 /**
@@ -475,7 +483,8 @@ const WEBSITE_PROJECTION = `{
   "servicesPageId": servicesPage->_id,
   contactEmail,
   schedulingUrl,
-  seoDescription
+  seoDescription,
+  googleTagId
 }`;
 
 /**
@@ -505,9 +514,27 @@ function requestHost(request: Request): string {
   return first || request.headers.get('host') || '';
 }
 
-export async function resolveWebsite(request: Request): Promise<Website> {
+/**
+ * The brand a request resolves to, out of a set of rows: the one whose domains
+ * match the host, else the one marked default, else null. Shared by
+ * resolveWebsite and resolveGoogleTagId so host resolution can never differ
+ * between the chrome and the analytics tag — the tag must follow exactly the
+ * brand the page does.
+ */
+function pickForHost<T extends { domains: string[] | null; isDefault: boolean | null }>(
+  rows: T[],
+  request: Request
+): T | null {
   const candidates = normalizeHost(requestHost(request));
+  const matched = rows.find((site) =>
+    (site.domains ?? []).some((domain) =>
+      normalizeHost(domain).some((d) => candidates.includes(d))
+    )
+  );
+  return matched ?? rows.find((site) => site.isDefault) ?? null;
+}
 
+export async function resolveWebsite(request: Request): Promise<Website> {
   let websites: Website[] = [];
   try {
     websites = await client.fetch<Website[]>(`*[_type == "website"] ${WEBSITE_PROJECTION}`);
@@ -516,15 +543,44 @@ export async function resolveWebsite(request: Request): Promise<Website> {
     return BUILT_IN_DEFAULT;
   }
 
-  const matched = websites.find((site) =>
-    (site.domains ?? []).some((domain) => {
-      const normalized = normalizeHost(domain);
-      return normalized.some((d) => candidates.includes(d));
-    })
-  );
-  if (matched) return matched;
+  return pickForHost(websites, request) ?? BUILT_IN_DEFAULT;
+}
 
-  return websites.find((site) => site.isDefault) ?? BUILT_IN_DEFAULT;
+/**
+ * A Google tag ID sanitised for interpolation into the gtag snippet. The value
+ * is a CMS field dropped into a `<script>` src and a JS string literal, so —
+ * like colorHex — anything that is not unambiguously a Google tag ID (a G-, GT-,
+ * AW-, DC- or UA- prefix followed by alphanumerics) is refused rather than
+ * escaped, so no CMS string can break out of the snippet. GTM- container IDs
+ * are deliberately excluded: they need the container snippet, not gtag.js.
+ */
+export function sanitizeGoogleTagId(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const id = value.trim();
+  return /^(G|GT|AW|DC|UA)-[A-Z0-9]+$/i.test(id) ? id : null;
+}
+
+/**
+ * The Google tag measurement ID for the brand this request resolves to, or null.
+ *
+ * Its own narrow query rather than resolveWebsite(): the root loader runs on
+ * every route — including the full-bleed pages outside the branded layout — and
+ * needs only this one field, so it must not pull a brand's whole document on
+ * every request. Host resolution is shared with resolveWebsite via pickForHost,
+ * so the tag lands on exactly the brand's pages and no others.
+ */
+export async function resolveGoogleTagId(request: Request): Promise<string | null> {
+  type TagRow = { domains: string[] | null; isDefault: boolean | null; googleTagId: string | null };
+  let rows: TagRow[] = [];
+  try {
+    rows = await client.fetch<TagRow[]>(
+      `*[_type == "website"]{ domains, isDefault, googleTagId }`
+    );
+  } catch {
+    // Analytics is never worth failing a page render over.
+    return null;
+  }
+  return sanitizeGoogleTagId(pickForHost(rows, request)?.googleTagId);
 }
 
 function curatedTabs(website: Website): SiteTab[] | null {
