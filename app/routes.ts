@@ -4,6 +4,7 @@ export default [
   layout("routes/_layout.tsx", [
     index("routes/home.tsx"),
     route("about", "routes/about.tsx"),
+    route("ai-workflow", "routes/ai-workflow.tsx"),
     route("articles", "routes/articles.tsx"),
     route("articles/:slug", "routes/articles.$slug.tsx"),
     route("services", "routes/services.tsx"),

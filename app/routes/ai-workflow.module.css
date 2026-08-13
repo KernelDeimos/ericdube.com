@@ -1,0 +1,372 @@
+/* Coherent Constructs — "How we build with AI" page.
+
+   Committed to the CC light theme: the neutrals (ink, muted, hairlines,
+   surface) come from the site's --site-* tokens so they track the brand, while
+   the teal accent and the vermilion "danger" are page semantics carried as
+   literals — teal is the AI-centric path, vermilion the vibe-coding shortcut.
+   Single-theme by design, matching the CC brand's white ground; if the brand
+   ever flips dark, the neutrals follow but the two accent literals would want a
+   second look. Typography is inherited (Inter) so the page reads as part of the
+   site rather than a pasted-in document. */
+
+.page {
+    --ink: var(--site-foreground);
+    --muted: var(--site-foreground-muted);
+    --faint: var(--site-foreground-subtle);
+    --hair: var(--site-border-subtle);
+    --hair-strong: var(--site-border);
+    /* Opaque white so the diagram frame and its chips read as clean panels,
+       the way the approved artifact did — the CC ground is white. */
+    --surface: #ffffff;
+    --accent: #0c7d73;
+    --accent-ink: #0a6a61;
+    --accent-soft: rgba(12, 125, 115, 0.1);
+    --danger: #b1481e;
+    --danger-soft: rgba(177, 72, 30, 0.09);
+    --shadow: 0 1px 2px rgba(21, 34, 47, 0.04), 0 12px 30px -18px rgba(21, 34, 47, 0.28);
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+    max-width: 64rem;
+    margin-inline: auto;
+    color: var(--ink);
+    font-size: 1.08rem;
+    line-height: 1.66;
+}
+
+/* The narrow measure the prose columns share; the figure breaks out wider. */
+.col {
+    max-width: 40rem;
+    margin-inline: auto;
+}
+
+.page strong {
+    font-weight: 700;
+}
+
+/* ---- Masthead ---- */
+.eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin: 0 0 1.6rem;
+}
+
+.brand {
+    color: var(--accent-ink);
+    font-weight: 600;
+}
+
+.sep {
+    color: var(--hair-strong);
+}
+
+.page h1 {
+    font-weight: 760;
+    font-size: clamp(2.3rem, 6.2vw, 3.9rem);
+    line-height: 1.02;
+    letter-spacing: -0.028em;
+    text-wrap: balance;
+    margin: 0 0 1.1rem;
+}
+
+.thin {
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+}
+
+.lede {
+    font-size: 1.28rem;
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: pretty;
+}
+
+.em {
+    color: var(--accent-ink);
+    font-style: italic;
+}
+
+.rule {
+    height: 1px;
+    background: var(--hair);
+    border: 0;
+    margin: clamp(2.4rem, 5vw, 3.4rem) 0;
+}
+
+.page h2 {
+    font-weight: 720;
+    font-size: clamp(1.5rem, 3.4vw, 2rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-wrap: balance;
+    margin: 0 0 1.5rem;
+}
+
+.vs {
+    color: var(--muted);
+    font-weight: 400;
+    font-style: italic;
+    padding: 0 0.15em;
+}
+
+.p {
+    margin: 0 0 1.35rem;
+    text-wrap: pretty;
+}
+
+.q {
+    color: var(--accent-ink);
+    font-style: italic;
+}
+
+.pull {
+    margin: 2.2rem 0;
+    padding: 0.4rem 0 0.4rem 1.6rem;
+    border-left: 3px solid var(--accent);
+    font-weight: 600;
+    font-size: clamp(1.35rem, 3.2vw, 1.75rem);
+    line-height: 1.24;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    text-wrap: balance;
+}
+
+.never {
+    color: var(--danger);
+    font-style: italic;
+    position: relative;
+    white-space: nowrap;
+}
+
+.swish {
+    position: absolute;
+    left: -8%;
+    bottom: -0.32em;
+    width: 116%;
+    height: 0.55em;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.swish path {
+    fill: none;
+    stroke: var(--danger);
+    stroke-width: 3.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .swish path {
+        stroke-dasharray: 260;
+        stroke-dashoffset: 260;
+        animation: draw 0.7s 0.35s cubic-bezier(0.6, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes draw {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+}
+
+/* ---- Figure ---- */
+.diagram {
+    margin: clamp(2.6rem, 5vw, 3.6rem) 0;
+}
+
+.figframe {
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: clamp(1rem, 3vw, 1.8rem) clamp(0.8rem, 3vw, 1.6rem) 1.1rem;
+    overflow-x: auto;
+}
+
+.figframe svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-width: 680px;
+    font-family: inherit;
+}
+
+.figcaption {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--muted);
+    margin-top: 1rem;
+    padding-left: 0.1rem;
+}
+
+.key {
+    color: var(--accent-ink);
+}
+
+.keyd {
+    color: var(--danger);
+}
+
+/* Diagram SVG theming. The literal SVG (injected as markup) carries plain class
+   names, so these are matched globally but scoped under the module-hashed
+   .figframe so nothing leaks. var() is invalid in SVG presentation attributes,
+   hence styling the classes here rather than on the elements. Custom properties
+   inherit from .page down into the SVG. */
+.figframe :global(text) {
+    fill: var(--ink);
+}
+
+.figframe :global(.d-box) {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.4;
+}
+
+.figframe :global(.d-skip) {
+    fill: var(--danger-soft);
+    stroke: var(--danger);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 5;
+}
+
+.figframe :global(.d-gate) {
+    fill: var(--accent-soft);
+    stroke: var(--accent);
+    stroke-width: 2.2;
+}
+
+.figframe :global(.t-ink) {
+    fill: var(--ink);
+}
+
+.figframe :global(.t-d) {
+    fill: var(--danger);
+}
+
+.figframe :global(.t-a) {
+    fill: var(--accent-ink);
+}
+
+.figframe :global(.t-mut) {
+    fill: var(--muted);
+}
+
+.figframe :global(.mono) {
+    font-family: var(--font-mono);
+}
+
+.figframe :global(.ln) {
+    stroke: var(--ink);
+    stroke-width: 1.6;
+    fill: none;
+}
+
+.figframe :global(.ln-d) {
+    stroke: var(--danger);
+    stroke-width: 1.7;
+    fill: none;
+}
+
+.figframe :global(.ln-a) {
+    stroke: var(--accent);
+    stroke-width: 1.8;
+    fill: none;
+}
+
+.figframe :global(.hair) {
+    stroke: var(--hair);
+    stroke-width: 1;
+    fill: none;
+}
+
+.figframe :global(.m-n) {
+    fill: var(--ink);
+}
+
+.figframe :global(.m-d) {
+    fill: var(--danger);
+}
+
+.figframe :global(.m-a) {
+    fill: var(--accent);
+}
+
+.figframe :global(.stage) {
+    fill: none;
+    stroke: var(--hair-strong);
+    stroke-width: 1.3;
+}
+
+.figframe :global(.stage-hi) {
+    fill: var(--accent-soft);
+    stroke: var(--accent);
+    stroke-width: 2;
+}
+
+.figframe :global(.chip) {
+    fill: var(--surface);
+    stroke: var(--hair-strong);
+    stroke-width: 1.1;
+}
+
+.figframe :global(.chip-a) {
+    fill: var(--accent-soft);
+    stroke: var(--accent);
+    stroke-width: 1.3;
+}
+
+.figframe :global(.st-h) {
+    fill: var(--accent-ink);
+}
+
+.figframe :global(.st-hd) {
+    fill: var(--danger);
+}
+
+/* ---- Receipts strip ---- */
+.receipts {
+    margin: 2.4rem auto 0;
+    max-width: 40rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.receipt {
+    background: var(--accent-soft);
+    border: 1px solid var(--hair);
+    border-radius: 10px;
+    padding: 0.95rem 1rem;
+}
+
+.n {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 0.35rem;
+}
+
+.d {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--ink);
+    margin: 0;
+}
+
+@media (max-width: 34rem) {
+    .receipts {
+        grid-template-columns: 1fr;
+    }
+}

@@ -7,6 +7,7 @@ import { client } from '~/sanity/client';
 export type SiteTab =
   | 'home'
   | 'about'
+  | 'ai-workflow'
   | 'services'
   | 'articles'
   | 'demos'
@@ -371,6 +372,7 @@ export function appearanceTokens(appearance: Appearance): string {
 export const TAB_META: Record<SiteTab, { label: string; path: string }> = {
   home: { label: 'Home', path: '/' },
   about: { label: 'About', path: '/about' },
+  'ai-workflow': { label: 'AI Workflow', path: '/ai-workflow' },
   services: { label: 'Services', path: '/services' },
   articles: { label: 'Articles', path: '/articles' },
   demos: { label: 'Demos', path: '/demos' },
