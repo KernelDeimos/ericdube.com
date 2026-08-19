@@ -1,0 +1,308 @@
+/* Coherent Constructs — product Docs (stubbed API + CLI reference).
+   Same token system + teal accent as the other product pages. */
+
+.page {
+    --ink: var(--site-foreground);
+    --muted: var(--site-foreground-muted);
+    --faint: var(--site-foreground-subtle);
+    --hair: var(--site-border-subtle);
+    --hair-strong: var(--site-border);
+    --surface: #ffffff;
+    --accent: #0c7d73;
+    --accent-ink: #0a6a61;
+    --accent-soft: rgba(12, 125, 115, 0.1);
+    --accent-softer: rgba(12, 125, 115, 0.05);
+    --amber: #b45309;
+    --amber-soft: rgba(180, 83, 9, 0.09);
+    --shadow: 0 1px 2px rgba(21, 34, 47, 0.04), 0 12px 30px -18px rgba(21, 34, 47, 0.28);
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+    max-width: 60rem;
+    margin-inline: auto;
+    color: var(--ink);
+    font-size: 1.06rem;
+    line-height: 1.66;
+}
+
+.page strong {
+    font-weight: 700;
+}
+
+/* ---- Preview banner ---- */
+.preview {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    background: var(--amber-soft);
+    border: 1px solid rgba(180, 83, 9, 0.28);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin: 0 0 2rem;
+    font-size: 0.95rem;
+    color: var(--ink);
+}
+
+.previewTag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #ffffff;
+    background: var(--amber);
+    border-radius: 6px;
+    padding: 0.22rem 0.5rem;
+}
+
+/* ---- Hero ---- */
+.hero {
+    max-width: 44rem;
+}
+
+.eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.7rem;
+    margin: 0 0 1.4rem;
+}
+
+.brand {
+    color: var(--accent-ink);
+    font-weight: 600;
+}
+
+.sep {
+    color: var(--hair-strong);
+}
+
+.page h1 {
+    font-weight: 760;
+    font-size: clamp(2.1rem, 5vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.026em;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+}
+
+.lede {
+    font-size: 1.2rem;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0;
+    max-width: 40rem;
+    text-wrap: pretty;
+}
+
+.rule {
+    height: 1px;
+    background: var(--hair);
+    border: 0;
+    margin: clamp(2.2rem, 4vw, 3rem) 0;
+}
+
+/* ---- Sections ---- */
+.section {
+    margin: 0 0 clamp(2.4rem, 5vw, 3.2rem);
+}
+
+.page h2 {
+    font-weight: 720;
+    font-size: clamp(1.35rem, 3vw, 1.8rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0 0 1rem;
+    scroll-margin-top: 5rem;
+}
+
+.p {
+    margin: 0 0 1.2rem;
+    text-wrap: pretty;
+    color: var(--ink);
+}
+
+.p a,
+.foot a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.p a:hover,
+.foot a:hover {
+    text-decoration: underline;
+}
+
+/* ---- Endpoint list ---- */
+.endpoints {
+    list-style: none;
+    margin: 0 0 1.4rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.endpoint {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 0.8rem;
+    align-items: baseline;
+    padding: 0.85rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 11px;
+}
+
+.method {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    color: #ffffff;
+    align-self: center;
+}
+
+.get {
+    background: var(--accent);
+}
+
+.post {
+    background: #1d4ed8;
+}
+
+.path {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.edesc {
+    color: var(--muted);
+    font-size: 0.94rem;
+    line-height: 1.45;
+}
+
+/* ---- Webhook events ---- */
+.events {
+    list-style: none;
+    margin: 0 0 1.4rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.event {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: baseline;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-softer);
+    border-radius: 0 10px 10px 0;
+}
+
+.event code {
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+    color: var(--accent-ink);
+    font-weight: 600;
+}
+
+.event span {
+    color: var(--muted);
+    font-size: 0.94rem;
+    line-height: 1.45;
+}
+
+/* ---- Code block (dark terminal) ---- */
+.codewrap {
+    margin: 1rem 0 0;
+    border: 1px solid var(--hair-strong);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    background: #0f172a;
+}
+
+.codebar {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.65rem 0.95rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dotr,
+.doty,
+.dotg {
+    width: 0.68rem;
+    height: 0.68rem;
+    border-radius: 50%;
+}
+
+.dotr {
+    background: #ff5f56;
+}
+
+.doty {
+    background: #ffbd2e;
+}
+
+.dotg {
+    background: #27c93f;
+}
+
+.codetitle {
+    margin-left: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: rgba(226, 232, 240, 0.65);
+}
+
+.code {
+    margin: 0;
+    padding: 1.1rem 1.25rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+    line-height: 1.65;
+    color: #e2e8f0;
+    tab-size: 2;
+}
+
+/* ---- Footer ---- */
+.foot {
+    border-top: 1px solid var(--hair);
+    padding-top: 1.6rem;
+    color: var(--muted);
+}
+
+.foot p {
+    margin: 0;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 46rem) {
+    .endpoint {
+        grid-template-columns: auto 1fr;
+        row-gap: 0.4rem;
+    }
+
+    .endpoint .edesc {
+        grid-column: 1 / -1;
+    }
+}

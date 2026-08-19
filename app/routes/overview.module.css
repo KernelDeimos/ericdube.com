@@ -1,0 +1,455 @@
+/* Coherent Constructs — product landing (code-review product).
+
+   Same system as ai-workflow.module.css: neutrals come from the site's --site-*
+   tokens so they track the brand; the teal accent is a page-semantic literal.
+   Committed to the CC light ground. Typography inherited (Inter) so the page
+   reads as part of the site, not a pasted-in document. */
+
+.page {
+    --ink: var(--site-foreground);
+    --muted: var(--site-foreground-muted);
+    --faint: var(--site-foreground-subtle);
+    --hair: var(--site-border-subtle);
+    --hair-strong: var(--site-border);
+    --surface: #ffffff;
+    --accent: #0c7d73;
+    --accent-ink: #0a6a61;
+    --accent-soft: rgba(12, 125, 115, 0.1);
+    --accent-softer: rgba(12, 125, 115, 0.05);
+    --shadow: 0 1px 2px rgba(21, 34, 47, 0.04), 0 12px 30px -18px rgba(21, 34, 47, 0.28);
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+    max-width: 70rem;
+    margin-inline: auto;
+    color: var(--ink);
+    font-size: 1.08rem;
+    line-height: 1.66;
+}
+
+.page strong {
+    font-weight: 700;
+}
+
+/* The narrow measure prose sections share; grids break out wider. */
+.col {
+    max-width: 42rem;
+    margin-inline: auto;
+}
+
+/* ---- Hero ---- */
+.hero {
+    max-width: 48rem;
+    margin-inline: auto;
+    text-align: center;
+}
+
+.eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 0.75rem;
+    margin: 0 0 1.5rem;
+}
+
+.brand {
+    color: var(--accent-ink);
+    font-weight: 600;
+}
+
+.sep {
+    color: var(--hair-strong);
+}
+
+.page h1 {
+    font-weight: 760;
+    font-size: clamp(2.4rem, 6.4vw, 4.1rem);
+    line-height: 1.02;
+    letter-spacing: -0.028em;
+    text-wrap: balance;
+    margin: 0 0 1.2rem;
+}
+
+.em {
+    color: var(--accent-ink);
+    font-style: italic;
+}
+
+.lede {
+    font-size: 1.28rem;
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 0 auto;
+    max-width: 40rem;
+    text-wrap: pretty;
+}
+
+/* ---- Buttons ---- */
+.cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+    margin: 1.9rem 0 0;
+}
+
+.btnPrimary,
+.btnGhost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 640;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    padding: 0.72rem 1.35rem;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.btnPrimary {
+    background: var(--accent);
+    color: #ffffff;
+    border: 1px solid var(--accent);
+    box-shadow: var(--shadow);
+}
+
+.btnPrimary:hover {
+    background: var(--accent-ink);
+    transform: translateY(-1px);
+}
+
+.btnGhost {
+    background: transparent;
+    color: var(--accent-ink);
+    border: 1px solid var(--hair-strong);
+}
+
+.btnGhost:hover {
+    border-color: var(--accent);
+    background: var(--accent-softer);
+}
+
+.btnPrimary:focus-visible,
+.btnGhost:focus-visible,
+.faq summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.reassure {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    margin: 1.1rem 0 0;
+}
+
+.rule {
+    height: 1px;
+    background: var(--hair);
+    border: 0;
+    margin: clamp(2.6rem, 5vw, 3.6rem) 0;
+}
+
+/* ---- Section headings ---- */
+.kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 0.7rem;
+}
+
+.page h2 {
+    font-weight: 720;
+    font-size: clamp(1.55rem, 3.6vw, 2.2rem);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    text-wrap: balance;
+    margin: 0 0 1.1rem;
+}
+
+.page h3 {
+    font-weight: 700;
+    font-size: 1.16rem;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin: 0 0 0.5rem;
+}
+
+.p {
+    margin: 0 0 1.2rem;
+    text-wrap: pretty;
+    color: var(--ink);
+}
+
+.col + .pillars,
+.col + .outcomes {
+    margin-top: 1.8rem;
+}
+
+/* ---- Pillars ---- */
+.pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: clamp(2.4rem, 5vw, 3.2rem) 0;
+}
+
+.pillar {
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    padding: 1.5rem 1.4rem;
+    box-shadow: var(--shadow);
+}
+
+.pillar p:last-child {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.99rem;
+    line-height: 1.5;
+}
+
+.pillarLead {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+}
+
+.pillarLead p:last-child {
+    color: var(--ink);
+}
+
+.pn {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 0.7rem;
+}
+
+/* ---- Coverage showcase ---- */
+.coverage {
+    margin: clamp(2.6rem, 5vw, 3.6rem) 0;
+    background: var(--accent-softer);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: clamp(1.6rem, 4vw, 2.6rem);
+}
+
+.coverageHead {
+    max-width: 42rem;
+}
+
+.meter {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 1.6rem 0 0;
+}
+
+.track {
+    background: var(--site-surface-strong);
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.seg {
+    display: block;
+    padding: 0.6rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    border-radius: 9px;
+    min-width: max-content;
+}
+
+.segAi {
+    background: var(--site-surface-strong);
+    color: var(--ink);
+}
+
+.segRev {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    border: 1px solid var(--accent);
+}
+
+.segUnd {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+.metercap {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    line-height: 1.5;
+    color: var(--muted);
+    margin: 1rem 0 0;
+}
+
+/* ---- Outcomes ---- */
+.outcomes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 0 0 clamp(2.6rem, 5vw, 3.6rem);
+}
+
+.outcome {
+    border-left: 3px solid var(--accent);
+    padding: 0.2rem 0 0.2rem 1.1rem;
+}
+
+.outcome p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.99rem;
+    line-height: 1.5;
+}
+
+/* ---- Pricing teaser ---- */
+.priceTeaser {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(1.4rem, 4vw, 2.6rem);
+    align-items: center;
+    margin: clamp(2.6rem, 5vw, 3.6rem) 0;
+    padding: clamp(1.6rem, 4vw, 2.4rem);
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+.priceCopy .p {
+    color: var(--muted);
+}
+
+.tierList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.tierList li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--hair);
+    border-radius: 11px;
+    background: var(--accent-softer);
+}
+
+.tierList strong {
+    font-size: 0.98rem;
+}
+
+.tierList span {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.4;
+}
+
+/* ---- FAQ ---- */
+.faq {
+    max-width: 44rem;
+    margin: 0 auto clamp(2.6rem, 5vw, 3.6rem);
+}
+
+.faq h2 {
+    text-align: center;
+    margin-bottom: 1.6rem;
+}
+
+.faq details {
+    border-top: 1px solid var(--hair);
+    padding: 0.2rem 0;
+}
+
+.faq details:last-of-type {
+    border-bottom: 1px solid var(--hair);
+}
+
+.faq summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.95rem 2rem 0.95rem 0.1rem;
+    font-weight: 640;
+    position: relative;
+    color: var(--ink);
+}
+
+.faq summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq summary::after {
+    content: "+";
+    position: absolute;
+    right: 0.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-mono);
+    color: var(--accent-ink);
+    font-size: 1.15rem;
+}
+
+.faq details[open] summary::after {
+    content: "\2212"; /* minus */
+}
+
+.faq details p {
+    margin: 0 0 1rem;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.faq a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.faq a:hover {
+    text-decoration: underline;
+}
+
+/* ---- Final CTA ---- */
+.finalCta {
+    text-align: center;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    padding: clamp(2rem, 5vw, 3rem);
+}
+
+.finalCta h2 {
+    margin-bottom: 1.4rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 52rem) {
+    .pillars,
+    .outcomes {
+        grid-template-columns: 1fr;
+    }
+
+    .priceTeaser {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+}

@@ -5,6 +5,18 @@ export default [
     index("routes/home.tsx"),
     route("about", "routes/about.tsx"),
     route("ai-workflow", "routes/ai-workflow.tsx"),
+    // Coherent Constructs' "Prehend" code-review product (feat/cc-code-review):
+    // one top-level tab at /prehend whose section layout renders the product
+    // sub-nav; the pages fan out beneath it, gated as a group by the 'prehend'
+    // tab so a brand that omits it 404s the whole section.
+    route("prehend", "routes/prehend-layout.tsx", [
+      index("routes/overview.tsx"),
+      route("how-it-works", "routes/how-it-works.tsx"),
+      route("developers", "routes/developers.tsx"),
+      route("docs", "routes/docs.tsx"),
+      route("pricing", "routes/pricing.tsx"),
+      route("security", "routes/security.tsx"),
+    ]),
     route("articles", "routes/articles.tsx"),
     route("articles/:slug", "routes/articles.$slug.tsx"),
     route("services", "routes/services.tsx"),

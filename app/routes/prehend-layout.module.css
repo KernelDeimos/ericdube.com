@@ -1,0 +1,108 @@
+/* Prehend product section — the second-level sticky sub-nav shown on every
+   /prehend/* route (routes/prehend-layout.tsx). It sits under the global CC
+   header (which scrolls away) and sticks to the top once you scroll into the
+   section, so section wayfinding + the CTA stay in reach. Same teal accent and
+   token system as the product pages; CC is a #ffffff-background brand. */
+
+.bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #ffffff;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03), 0 10px 24px -20px rgba(21, 34, 47, 0.4);
+    --accent: #0c7d73;
+    --accent-ink: #0a6a61;
+    --accent-soft: rgba(12, 125, 115, 0.1);
+    --muted: #475569;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+.inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.55rem 2rem;
+}
+
+.label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-ink);
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.links::-webkit-scrollbar {
+    display: none;
+}
+
+.link {
+    white-space: nowrap;
+    padding: 0.4rem 0.7rem;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.12s ease, background 0.12s ease;
+}
+
+.link:hover {
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+}
+
+.active {
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+}
+
+.cta {
+    flex-shrink: 0;
+    padding: 0.45rem 0.95rem;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #ffffff;
+    font-weight: 640;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background 0.12s ease, transform 0.12s ease;
+}
+
+.cta:hover {
+    background: var(--accent-ink);
+    transform: translateY(-1px);
+}
+
+.label:focus-visible,
+.link:focus-visible,
+.cta:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+@media (max-width: 46rem) {
+    .inner {
+        padding: 0.5rem 1rem;
+        gap: 0.6rem;
+    }
+
+    /* The wordmark yields to the pills + CTA on narrow screens; the active pill
+       auto-scrolls into view (see the layout component). */
+    .label {
+        display: none;
+    }
+}

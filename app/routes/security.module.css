@@ -1,0 +1,436 @@
+/* Coherent Constructs — product Security & data handling.
+   Same token system + teal accent as the other product pages. */
+
+.page {
+    --ink: var(--site-foreground);
+    --muted: var(--site-foreground-muted);
+    --faint: var(--site-foreground-subtle);
+    --hair: var(--site-border-subtle);
+    --hair-strong: var(--site-border);
+    --surface: #ffffff;
+    --accent: #0c7d73;
+    --accent-ink: #0a6a61;
+    --accent-soft: rgba(12, 125, 115, 0.1);
+    --accent-softer: rgba(12, 125, 115, 0.05);
+    --shadow: 0 1px 2px rgba(21, 34, 47, 0.04), 0 12px 30px -18px rgba(21, 34, 47, 0.28);
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+    max-width: 62rem;
+    margin-inline: auto;
+    color: var(--ink);
+    font-size: 1.06rem;
+    line-height: 1.64;
+}
+
+.page strong {
+    font-weight: 700;
+}
+
+/* ---- Hero ---- */
+.hero {
+    max-width: 44rem;
+}
+
+.eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.7rem;
+    margin: 0 0 1.4rem;
+}
+
+.brand {
+    color: var(--accent-ink);
+    font-weight: 600;
+}
+
+.sep {
+    color: var(--hair-strong);
+}
+
+.page h1 {
+    font-weight: 760;
+    font-size: clamp(2.1rem, 5vw, 3.3rem);
+    line-height: 1.05;
+    letter-spacing: -0.028em;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+}
+
+.lede {
+    font-size: 1.2rem;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0;
+    max-width: 40rem;
+    text-wrap: pretty;
+}
+
+/* ---- Trust badges ---- */
+.badges {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 1.8rem 0 0;
+    padding: 0;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--hair-strong);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    box-shadow: var(--shadow);
+}
+
+.badgeDot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.badgePending .badgeDot {
+    background: #b45309;
+}
+
+.badgeNote {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 0.78rem;
+}
+
+.rule {
+    height: 1px;
+    background: var(--hair);
+    border: 0;
+    margin: clamp(2.4rem, 5vw, 3.2rem) 0;
+}
+
+/* ---- Sections ---- */
+.section {
+    margin: 0 0 clamp(2.6rem, 5vw, 3.4rem);
+}
+
+.kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 0.7rem;
+}
+
+.page h2 {
+    font-weight: 720;
+    font-size: clamp(1.4rem, 3vw, 1.95rem);
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    text-wrap: balance;
+    margin: 0 0 1.1rem;
+}
+
+.p {
+    margin: 0 0 1.2rem;
+    text-wrap: pretty;
+    color: var(--ink);
+    max-width: 44rem;
+}
+
+.p a {
+    color: var(--accent-ink);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.p a:hover {
+    text-decoration: underline;
+}
+
+/* ---- Data-flow cards ---- */
+.flows {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+    margin: 1.4rem 0 0;
+}
+
+.flow {
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: 1.5rem 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.flowName {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 720;
+    font-size: 1.12rem;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.9rem;
+}
+
+.flowTag {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+}
+
+/* code → provider chip flow */
+.hops {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 1rem;
+    padding: 0;
+}
+
+.hop {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    background: var(--accent-softer);
+    border: 1px solid var(--hair);
+    color: var(--ink);
+}
+
+.hopUs {
+    border-style: dashed;
+    color: var(--muted);
+}
+
+.hopArrow {
+    color: var(--hair-strong);
+    font-weight: 700;
+}
+
+.flow p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* ---- Stored vs ephemeral ---- */
+.storeGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+    margin: 1.4rem 0 0;
+}
+
+.storeCol {
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    padding: 1.4rem 1.4rem;
+    background: var(--surface);
+}
+
+.storeHead {
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 0 0 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.storeList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    font-size: 0.94rem;
+    color: var(--muted);
+    line-height: 1.45;
+}
+
+.storeList li {
+    display: grid;
+    grid-template-columns: 1rem 1fr;
+    gap: 0.5rem;
+    align-items: start;
+}
+
+.markKeep {
+    color: var(--accent);
+    font-weight: 800;
+}
+
+.markGone {
+    color: var(--faint);
+    font-weight: 800;
+}
+
+/* ---- Retention callout ---- */
+.callout {
+    background: var(--accent-softer);
+    border: 1px solid var(--accent);
+    border-left-width: 4px;
+    border-radius: 0 14px 14px 0;
+    padding: clamp(1.4rem, 3.5vw, 2rem);
+    margin: 0 0 clamp(2.6rem, 5vw, 3.4rem);
+}
+
+.callout h2 {
+    margin: 0 0 0.6rem;
+    text-align: left;
+}
+
+.callout p {
+    margin: 0;
+    color: var(--ink);
+    max-width: 46rem;
+    line-height: 1.55;
+}
+
+/* ---- Detail list (controls / sub-processors / disclosure) ---- */
+.detailGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+    margin: 1.4rem 0 0;
+}
+
+.detail {
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    padding: 1.4rem 1.4rem;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.detail h3 {
+    font-weight: 700;
+    font-size: 1.06rem;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.5rem;
+}
+
+.detail p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.detail p a,
+.detail code {
+    color: var(--accent-ink);
+    font-weight: 600;
+}
+
+.detail code {
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+}
+
+.detail p a {
+    text-decoration: none;
+}
+
+.detail p a:hover {
+    text-decoration: underline;
+}
+
+/* ---- Final CTA ---- */
+.finalCta {
+    text-align: center;
+    background: #0f172a;
+    border-radius: 16px;
+    padding: clamp(2rem, 5vw, 3rem);
+    color: #e2e8f0;
+}
+
+.finalCta h2 {
+    color: #ffffff;
+    margin-bottom: 0.8rem;
+}
+
+.finalCta p {
+    margin: 0 auto 1.4rem;
+    color: rgba(226, 232, 240, 0.72);
+    max-width: 38rem;
+}
+
+.finalCtaBtns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+}
+
+.btnPrimary,
+.btnGhost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 640;
+    font-size: 1rem;
+    padding: 0.72rem 1.35rem;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.btnPrimary {
+    background: var(--accent);
+    color: #ffffff;
+    border: 1px solid var(--accent);
+}
+
+.btnPrimary:hover {
+    transform: translateY(-1px);
+}
+
+.btnGhost {
+    background: transparent;
+    color: #e2e8f0;
+    border: 1px solid rgba(226, 232, 240, 0.32);
+}
+
+.btnGhost:hover {
+    border-color: #e2e8f0;
+}
+
+.btnPrimary:focus-visible,
+.btnGhost:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 50rem) {
+    .flows,
+    .storeGrid,
+    .detailGrid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -13,7 +13,12 @@ export type SiteTab =
   | 'demos'
   | 'artifacts'
   | 'musings'
-  | 'weird-food';
+  | 'weird-food'
+  // Coherent Constructs' "Prehend" code-review product — a single top-level tab.
+  // Its own pages fan out beneath /prehend/* via the section layout
+  // (routes/prehend-layout.tsx), gated as a group by this one tab, so a brand
+  // whose curated list omits it 404s the whole section.
+  | 'prehend';
 
 /**
  * The colour fields were plain hex strings before the Studio gained a colour
@@ -379,6 +384,9 @@ export const TAB_META: Record<SiteTab, { label: string; path: string }> = {
   artifacts: { label: 'Artifacts', path: '/artifacts' },
   musings: { label: 'Musings', path: '/musings' },
   'weird-food': { label: 'Weird Food', path: '/weird-food' },
+  // Coherent Constructs "Prehend" product — one section tab; its pages fan out
+  // under /prehend/* via routes/prehend-layout.tsx.
+  prehend: { label: 'Prehend', path: '/prehend' },
 };
 
 const ALL_TABS = Object.keys(TAB_META) as SiteTab[];
