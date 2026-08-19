@@ -13,3 +13,12 @@ export const PRODUCT_CLI = 'prehend';
 /** The parent brand. Never call the team or the service "engineer/engineering"
  *  — the word is protected in Canada (P.Eng.) and CC holds no P.Eng. licence. */
 export const PRODUCT_PARENT = 'Coherent Constructs';
+
+/**
+ * Release flag for the Prehend product section. While false the 'prehend' tab is
+ * filtered out of navigation and reachability (see releasable() in website.ts),
+ * so the whole section is dark — nav link hidden, /prehend/* routes 404, absent
+ * from the sitemap — even though the code ships. Flip to true at launch; no
+ * per-brand Sanity change is needed.
+ */
+export const PREHEND_ENABLED = false;

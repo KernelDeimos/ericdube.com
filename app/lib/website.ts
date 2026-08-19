@@ -3,6 +3,7 @@
 // brand, so adding a brand is a Sanity document rather than a deploy.
 
 import { client } from '~/sanity/client';
+import { PREHEND_ENABLED } from './product';
 
 export type SiteTab =
   | 'home'
@@ -620,17 +621,30 @@ function curatedTabs(website: Website): SiteTab[] | null {
 }
 
 /**
+ * Tabs held behind a release flag, filtered out of every tab list — nav,
+ * reachability and the sitemap alike — so a section can ship dark and be turned
+ * on with a single code flag, no per-brand Sanity change. Currently just the
+ * Prehend product until it launches (see PREHEND_ENABLED).
+ */
+const FLAGGED_OFF_TABS: readonly SiteTab[] = PREHEND_ENABLED ? [] : ['prehend'];
+
+function releasable(tabs: SiteTab[]): SiteTab[] {
+  return FLAGGED_OFF_TABS.length ? tabs.filter((tab) => !FLAGGED_OFF_TABS.includes(tab)) : tabs;
+}
+
+/**
  * Which routes this brand may serve. A brand that has not curated a list keeps
  * every route reachable — "unlinked but visitable" stays possible, and only an
- * explicit curation makes a section 404.
+ * explicit curation makes a section 404. Flagged-off sections are removed
+ * regardless, so an unreleased product 404s even where its tab is listed.
  */
 export function enabledTabs(website: Website): SiteTab[] {
-  return curatedTabs(website) ?? ALL_TABS;
+  return releasable(curatedTabs(website) ?? ALL_TABS);
 }
 
 /** Which links the header shows — not the same set as what is reachable. */
 export function navTabs(website: Website): SiteTab[] {
-  return curatedTabs(website) ?? DEFAULT_NAV_TABS;
+  return releasable(curatedTabs(website) ?? DEFAULT_NAV_TABS);
 }
 
 export function isTabEnabled(website: Website, tab: SiteTab): boolean {
