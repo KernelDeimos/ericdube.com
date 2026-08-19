@@ -1,5 +1,6 @@
 import Container from '~/components/Container';
 import { siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
+import { seoMeta } from '~/lib/seo';
 
 type Demo = {
   title: string;
@@ -61,14 +62,19 @@ const pythonDemos: Demo[] = [
   },
 ];
 
-export function meta({ matches }: { matches: readonly SiteMetaMatch[] }) {
-  return [
-    { title: `Demos — ${siteTitleFrom(matches)}` },
-    {
-      name: 'description',
-      content: 'Interactive generative demos that run real Python in your browser via Pyodide.',
-    },
-  ];
+export function meta({
+  matches,
+  location,
+}: {
+  matches: readonly SiteMetaMatch[];
+  location: { pathname: string };
+}) {
+  return seoMeta({
+    matches,
+    location,
+    title: `Demos — ${siteTitleFrom(matches)}`,
+    description: 'Interactive generative demos that run real Python in your browser via Pyodide.',
+  });
 }
 
 const gridStyle = {

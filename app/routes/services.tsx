@@ -5,6 +5,7 @@ import ServiceCard, { type Service } from '~/components/ServiceCard';
 import ContactForm, { type ContactFormResult } from '~/components/ContactForm';
 import { submitEnquiry, contactMailto } from '~/lib/enquiries';
 import { resolveWebsite, requireTab, siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
+import { seoMeta } from '~/lib/seo';
 import styles from './services.module.css';
 
 type ProcessStep = { title: string; description: string | null };
@@ -177,18 +178,17 @@ export async function action({ request }: { request: Request }) {
 export function meta({
   data,
   matches,
+  location,
 }: {
   data: Awaited<ReturnType<typeof loader>> | undefined;
   matches: readonly SiteMetaMatch[];
+  location: { pathname: string };
 }) {
   const heading = data?.page?.heading || FALLBACK.heading;
+  // Omitted entirely rather than filled with generic filler: a brand with no
+  // copy of its own is better off with no meta description than a bland one.
   const description = data?.page?.seoDescription || data?.page?.intro;
-  return [
-    { title: `${heading} — ${siteTitleFrom(matches)}` },
-    // Omitted entirely rather than filled with generic filler: a brand with no
-    // copy of its own is better off with no meta description than a bland one.
-    ...(description ? [{ name: 'description', content: description }] : []),
-  ];
+  return seoMeta({ matches, location, title: `${heading} — ${siteTitleFrom(matches)}`, description });
 }
 
 export default function Services() {

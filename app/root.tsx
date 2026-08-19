@@ -3,6 +3,7 @@ import {
   Links,
   Meta,
   Outlet,
+  redirect,
   Scripts,
   ScrollRestoration,
   useRouteLoaderData,
@@ -10,7 +11,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { resolveGoogleTagId } from "~/lib/website";
+import { resolveGoogleTagId, requestOrigin } from "~/lib/website";
 
 /**
  * Resolved for every route — including the full-bleed pages that render outside
@@ -19,7 +20,34 @@ import { resolveGoogleTagId } from "~/lib/website";
  * resolveGoogleTagId), never the whole brand document.
  */
 export async function loader({ request }: Route.LoaderArgs) {
-  return { googleTagId: await resolveGoogleTagId(request) };
+  const url = new URL(request.url);
+
+  // Canonicalise every page to a single trailing-slash URL. Only document
+  // requests are redirected — a GET/HEAD that accepts HTML — so React Router's
+  // own data fetches (Accept: */*) and form POSTs pass through untouched, and
+  // only real navigations and crawlers get the 301. Home is already '/', paths
+  // with a file extension (/sitemap.xml, assets, RR's .data) carry a dot in
+  // their last segment and are skipped, and the API is left alone.
+  const accepts = request.headers.get("accept") ?? "";
+  const method = request.method.toUpperCase();
+  const lastSegment = url.pathname.split("/").pop() ?? "";
+  if (
+    (method === "GET" || method === "HEAD") &&
+    accepts.includes("text/html") &&
+    url.pathname !== "/" &&
+    !url.pathname.endsWith("/") &&
+    !lastSegment.includes(".") &&
+    !url.pathname.startsWith("/api/")
+  ) {
+    throw redirect(`${url.pathname}/${url.search}`, 301);
+  }
+
+  return {
+    googleTagId: await resolveGoogleTagId(request),
+    // Published so meta() — which has no request — can build absolute
+    // canonical/og:url/JSON-LD URLs off the host the visitor actually reached.
+    origin: requestOrigin(request),
+  };
 }
 
 /**

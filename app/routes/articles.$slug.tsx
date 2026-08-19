@@ -7,6 +7,7 @@ import Container from '~/components/Container';
 import { type AiInfo, designationLabel, scoreColor } from '~/lib/ai';
 import styles from './articles.$slug.module.css';
 import { siteTitleFrom } from '~/lib/website';
+import { seoMeta, canonicalUrl } from '~/lib/seo';
 
 type Article = {
   title: string;
@@ -145,11 +146,46 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { article };
 }
 
-export function meta({ data, matches }: Route.MetaArgs) {
+export function meta({ data, matches, location }: Route.MetaArgs) {
   if (!data) return [{ title: 'Not found' }];
+  const { article } = data;
+  const siteName = siteTitleFrom(matches);
+  // Sanity CDN URLs are already absolute, so they're valid og:image / JSON-LD
+  // image values as-is. 1200x630 is the standard social-card frame.
+  const image = article.coverImage
+    ? urlFor(article.coverImage).width(1200).height(630).fit('crop').url()
+    : null;
+  const url = canonicalUrl(matches, location.pathname);
+
+  // Article structured data, sourced entirely from the Sanity article rather
+  // than hardcoded — headline, excerpt, dates, cover image and tags all come
+  // from the loaded document.
+  const jsonLd: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.title,
+    author: { '@type': 'Person', name: siteName },
+    publisher: { '@type': 'Organization', name: siteName },
+  };
+  if (article.excerpt) jsonLd.description = article.excerpt;
+  if (article.publishedAt) {
+    jsonLd.datePublished = article.publishedAt;
+    jsonLd.dateModified = article.publishedAt;
+  }
+  if (image) jsonLd.image = [image];
+  if (article.tags && article.tags.length) jsonLd.keywords = article.tags.join(', ');
+  if (url) jsonLd.mainEntityOfPage = url;
+
   return [
-    { title: `${data.article.title} — ${siteTitleFrom(matches)}` },
-    ...(data.article.excerpt ? [{ name: 'description', content: data.article.excerpt }] : []),
+    ...seoMeta({
+      matches,
+      location,
+      title: `${article.title} — ${siteName}`,
+      description: article.excerpt,
+      type: 'article',
+      image,
+    }),
+    { 'script:ld+json': jsonLd },
   ];
 }
 

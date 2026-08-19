@@ -4,6 +4,7 @@ import type { AiInfo } from '~/lib/ai';
 import Container from '~/components/Container';
 import ItemCard from '~/components/ItemCard';
 import { siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
+import { seoMeta } from '~/lib/seo';
 
 type Article = {
   title: string;
@@ -30,8 +31,14 @@ export async function loader() {
   return { articles };
 }
 
-export function meta({ matches }: { matches: readonly SiteMetaMatch[] }) {
-  return [{ title: `Articles — ${siteTitleFrom(matches)}` }];
+export function meta({
+  matches,
+  location,
+}: {
+  matches: readonly SiteMetaMatch[];
+  location: { pathname: string };
+}) {
+  return seoMeta({ matches, location, title: `Articles — ${siteTitleFrom(matches)}` });
 }
 
 export default function Articles() {

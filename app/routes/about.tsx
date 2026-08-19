@@ -4,6 +4,7 @@ import { client } from '~/sanity/client';
 import { urlFor } from '~/sanity/image';
 import Container from '~/components/Container';
 import { resolveWebsite, requireTab, siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
+import { seoMeta } from '~/lib/seo';
 import styles from './about.module.css';
 
 type Highlight = { label: string; detail: string };
@@ -53,16 +54,15 @@ export async function loader({ request }: { request: Request }) {
 export function meta({
   data,
   matches,
+  location,
 }: {
   data: Awaited<ReturnType<typeof loader>> | undefined;
   matches: readonly SiteMetaMatch[];
+  location: { pathname: string };
 }) {
   const heading = data?.page?.heading || 'About';
   const description = data?.page?.seoDescription || data?.page?.intro;
-  return [
-    { title: `${heading} — ${siteTitleFrom(matches)}` },
-    ...(description ? [{ name: 'description', content: description }] : []),
-  ];
+  return seoMeta({ matches, location, title: `${heading} — ${siteTitleFrom(matches)}`, description });
 }
 
 export default function About() {

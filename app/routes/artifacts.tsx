@@ -3,6 +3,7 @@ import Container from '~/components/Container';
 import { type AiInfo, designationLabel } from '~/lib/ai';
 import { listArtifacts } from '~/lib/nexus';
 import { siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
+import { seoMeta } from '~/lib/seo';
 
 type Artifact = {
   title: string;
@@ -28,15 +29,20 @@ export async function loader() {
   return { artifacts };
 }
 
-export function meta({ matches }: { matches: readonly SiteMetaMatch[] }) {
-  return [
-    { title: `Artifacts — ${siteTitleFrom(matches)}` },
-    {
-      name: 'description',
-      content:
-        'Self-contained interactive pages — dashboards, maps, and visualizations — each a single HTML document.',
-    },
-  ];
+export function meta({
+  matches,
+  location,
+}: {
+  matches: readonly SiteMetaMatch[];
+  location: { pathname: string };
+}) {
+  return seoMeta({
+    matches,
+    location,
+    title: `Artifacts — ${siteTitleFrom(matches)}`,
+    description:
+      'Self-contained interactive pages — dashboards, maps, and visualizations — each a single HTML document.',
+  });
 }
 
 const gridStyle = {

@@ -1,5 +1,6 @@
 import Container from '~/components/Container';
 import { resolveWebsite, requireTab, siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
+import { seoMeta } from '~/lib/seo';
 import styles from './ai-workflow.module.css';
 
 export async function loader({ request }: { request: Request }) {
@@ -11,16 +12,21 @@ export async function loader({ request }: { request: Request }) {
   return null;
 }
 
-export function meta({ matches }: { matches: readonly SiteMetaMatch[] }) {
-  return [
-    { title: `How we build with AI — ${siteTitleFrom(matches)}` },
-    {
-      name: 'description',
-      content:
-        'How Coherent Constructs builds with AI: AI-Centric development with mandatory human review, ' +
-        'tracked coverage, and receipts. Your product is never vibe-coded.',
-    },
-  ];
+export function meta({
+  matches,
+  location,
+}: {
+  matches: readonly SiteMetaMatch[];
+  location: { pathname: string };
+}) {
+  return seoMeta({
+    matches,
+    location,
+    title: `How we build with AI — ${siteTitleFrom(matches)}`,
+    description:
+      'How Coherent Constructs builds with AI: AI-Centric development with mandatory human review, ' +
+      'tracked coverage, and receipts. Your product is never vibe-coded.',
+  });
 }
 
 /**

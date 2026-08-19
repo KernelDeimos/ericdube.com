@@ -3,6 +3,7 @@ import type { Route } from './+types/home';
 import Container from '../components/Container';
 import { client } from '~/sanity/client';
 import { resolveWebsite, requireTab, siteTitleFrom } from '~/lib/website';
+import { seoMeta } from '~/lib/seo';
 import {
   HomeSections,
   needsPortfolioData,
@@ -67,9 +68,9 @@ export async function loader({ request }: { request: Request }) {
   return { sections, portfolio, tagline: website.tagline };
 }
 
-export function meta({ matches }: Route.MetaArgs) {
+export function meta({ matches, location }: Route.MetaArgs) {
   const site = siteTitleFrom(matches);
-  return [{ title: site }, { name: 'description', content: `Welcome to ${site}` }];
+  return seoMeta({ matches, location, title: site, description: `Welcome to ${site}` });
 }
 
 export default function Home() {

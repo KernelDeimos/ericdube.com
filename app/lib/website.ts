@@ -517,6 +517,27 @@ function requestHost(request: Request): string {
 }
 
 /**
+ * The absolute origin (protocol + host) the visitor actually reached, for
+ * building canonical, og:url and sitemap URLs. Behind the reverse proxy the
+ * `host`/protocol on the upstream request are the internal ones, so the
+ * `x-forwarded-*` pair wins where present, each a possibly comma-separated
+ * chain whose first entry is client-facing. Unlike requestHost this ignores the
+ * dev brand override: the origin must be the real server, not a spoofed brand.
+ */
+export function requestOrigin(request: Request): string {
+  const url = new URL(request.url);
+  const proto =
+    request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim() ||
+    url.protocol.replace(':', '') ||
+    'https';
+  const host =
+    request.headers.get('x-forwarded-host')?.split(',')[0]?.trim() ||
+    request.headers.get('host') ||
+    url.host;
+  return `${proto}://${host}`;
+}
+
+/**
  * The brand a request resolves to, out of a set of rows: the one whose domains
  * match the host, else the one marked default, else null. Shared by
  * resolveWebsite and resolveGoogleTagId so host resolution can never differ

@@ -3,6 +3,7 @@ import { client } from '~/sanity/client';
 import Container from '~/components/Container';
 import MusingCard from '~/components/MusingCard';
 import { siteTitleFrom, type SiteMetaMatch } from '~/lib/website';
+import { seoMeta } from '~/lib/seo';
 
 type Musing = {
   _id: string;
@@ -23,8 +24,14 @@ export async function loader() {
   return { musings };
 }
 
-export function meta({ matches }: { matches: readonly SiteMetaMatch[] }) {
-  return [{ title: `Musings — ${siteTitleFrom(matches)}` }];
+export function meta({
+  matches,
+  location,
+}: {
+  matches: readonly SiteMetaMatch[];
+  location: { pathname: string };
+}) {
+  return seoMeta({ matches, location, title: `Musings — ${siteTitleFrom(matches)}` });
 }
 
 export default function Musings() {

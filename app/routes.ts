@@ -19,4 +19,7 @@ export default [
   // full-bleed: serves the artifact's raw self-contained HTML (no site chrome)
   route("artifacts/:slug", "routes/artifacts.$slug.tsx"),
   route("api/zerogpt", "routes/api.zerogpt.tsx"),
+  // Computed per request (per-brand), not maintained files — see each route.
+  route("sitemap.xml", "routes/sitemap.xml.tsx"),
+  route("robots.txt", "routes/robots.txt.tsx"),
 ] satisfies RouteConfig;

@@ -1,6 +1,7 @@
 import ParticleSimulator from '~/components/ParticleSimulator';
 import { particleRulesets } from '~/data/particleRulesets';
-import { resolveWebsite, requireTab } from '~/lib/website';
+import { resolveWebsite, requireTab, type SiteMetaMatch } from '~/lib/website';
+import { seoMeta } from '~/lib/seo';
 
 // Full-bleed, so it renders outside the site layout and misses the tab check
 // that gates everything under it. Without this a brand that has switched Demos
@@ -11,15 +12,20 @@ export async function loader({ request }: { request: Request }) {
   return null;
 }
 
-export function meta() {
-  return [
-    { title: 'Particle Life — EricDubé.com' },
-    {
-      name: 'description',
-      content:
-        'Four species of particle, a random matrix of attraction and repulsion rules, and the emergent structures that fall out of it.',
-    },
-  ];
+export function meta({
+  matches,
+  location,
+}: {
+  matches: readonly SiteMetaMatch[];
+  location: { pathname: string };
+}) {
+  return seoMeta({
+    matches,
+    location,
+    title: 'Particle Life — EricDubé.com',
+    description:
+      'Four species of particle, a random matrix of attraction and repulsion rules, and the emergent structures that fall out of it.',
+  });
 }
 
 export default function ParticleLifeDemo() {

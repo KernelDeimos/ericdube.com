@@ -5,6 +5,7 @@ import { urlFor } from '~/sanity/image';
 import Container from '~/components/Container';
 import styles from './weird-food.$slug.module.css';
 import { siteTitleFrom } from '~/lib/website';
+import { seoMeta } from '~/lib/seo';
 
 type WeirdFood = {
   name: string;
@@ -34,9 +35,20 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { weirdFood };
 }
 
-export function meta({ data, matches }: Route.MetaArgs) {
+export function meta({ data, matches, location }: Route.MetaArgs) {
   if (!data) return [{ title: 'Not found' }];
-  return [{ title: `${data.weirdFood.name} — ${siteTitleFrom(matches)}` }];
+  const { weirdFood } = data;
+  const image = weirdFood.photo
+    ? urlFor(weirdFood.photo).width(1200).height(630).fit('crop').url()
+    : null;
+  return seoMeta({
+    matches,
+    location,
+    title: `${weirdFood.name} — ${siteTitleFrom(matches)}`,
+    description: weirdFood.notes,
+    type: 'article',
+    image,
+  });
 }
 
 export default function WeirdFoodDetail() {
