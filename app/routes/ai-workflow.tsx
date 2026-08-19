@@ -154,13 +154,13 @@ export default function AiWorkflow() {
 
           <p className={styles.p}>
             When we build a product for you, this product will <strong>never</strong> be “vibe
-            coded.” Vibe coding is when a developer prompts AI to develop every feature of the
-            software without ever reading the code — fine for a fun weekend project, but unacceptable
-            and irresponsible to hand off to a client.
+            coded.” Vibe coding, by our definition, is when a developer prompts AI to develop every
+            feature of the software <b><i>without looking at the code.</i></b>
           </p>
           <p className={styles.p}>
             So how do you know <span className={styles.q}>we're not doing that?</span> That's the
-            crux of the issue in the industry right now.
+            crux of the issue in the industry right now. <b>We do use AI</b>, but we
+            properly test, review, and fix code with a real human input too.
           </p>
         </section>
 
