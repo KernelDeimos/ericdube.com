@@ -28,11 +28,11 @@ export default function ItemCard({ title, url, accentColor = 'black', publishedA
     <a href={url} className={styles.card}>
       {coverImage && (
         <img
-          src={urlFor(coverImage).width(240).height(140).fit('crop').url()}
+          src={urlFor(coverImage).width(480).fit('max').url()}
           alt={coverImage.alt}
           width={240}
           height={140}
-          style={{ borderRadius: '0.375rem', objectFit: 'cover', flexShrink: 0 }}
+          style={{ borderRadius: '0.375rem', objectFit: 'contain', flexShrink: 0 }}
         />
       )}
       <div>
