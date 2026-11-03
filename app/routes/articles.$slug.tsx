@@ -259,9 +259,9 @@ export default function ArticleDetail() {
     <Container style={{ paddingTop: '3rem', paddingBottom: '4rem' }}>
       {article.coverImage && (
         <img
-          src={urlFor(article.coverImage).width(740).height(360).fit('crop').url()}
+          src={urlFor(article.coverImage).width(1480).fit('max').url()}
           alt={article.coverImage.alt}
-          style={{ width: '100%', borderRadius: '0.5rem', marginBottom: '2rem' }}
+          style={{ width: '100%', height: 'auto', borderRadius: '0.5rem', marginBottom: '2rem' }}
         />
       )}
       <h1 className={styles.articleTitle} style={{ fontSize: 'clamp(1.75rem, 4vw, 2.75rem)', margin: '0 0 0.75rem' }}>{article.title}</h1>
