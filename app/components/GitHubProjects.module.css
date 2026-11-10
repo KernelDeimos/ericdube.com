@@ -17,6 +17,34 @@
     gap: 1rem;
 }
 
+/* "Big" projects: a 2-up row above the small grid, so featured work (erguil.com,
+   concord.coherentconstructs.com) reads as double-width. Collapses to one column
+   on narrow screens. */
+.bigGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+    .bigGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.cardBig .cardImage {
+    height: 200px;
+}
+
+.cardBig .cardName {
+    font-size: 1.1rem;
+}
+
+.cardBig .cardDesc {
+    font-size: 0.9rem;
+}
+
 .card {
     display: block;
     border-radius: 0.75rem;
